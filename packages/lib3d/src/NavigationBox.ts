@@ -1,9 +1,37 @@
-import * as THREE from "three";
+import * as THREE from 'three';
 
 const HALF_PI = Math.PI / 2;
 const QUARTER_PI = Math.PI / 4;
 const WIDTH = 150;
 const HEIGHT = 150;
+
+// text literals
+
+// TO IMPROVE
+
+const language = navigator.language;
+const langCode = language.split('-')[0] || language;
+let messages: any;
+
+if (langCode === 'es') {
+  messages = {
+    TOP: 'SUPERIOR',
+    BOTTOM: 'INFERIOR',
+    RIGHT: 'DERECHA',
+    LEFT: 'IZQUIERDA',
+    FRONT: 'FRONTAL',
+    BACK: 'POSTERIOR',
+  };
+} else {
+  messages = {
+    TOP: 'TOP',
+    BOTTOM: 'BOTTOM',
+    RIGHT: 'RIGHT',
+    LEFT: 'LEFT',
+    FRONT: 'FRONT',
+    BACK: 'BACK',
+  };
+}
 
 interface IClickBox {
   position: [number, number, number];
@@ -16,158 +44,158 @@ const clickBoxes: IClickBox[] = [
   {
     position: [0, 0, 1],
     size: [1.5, 1.5, 0.001],
-    cameraAngle: [-HALF_PI, 0]
+    cameraAngle: [-HALF_PI, 0],
   },
   // BOTTOM
   {
     position: [0, 0, -1],
     size: [1.5, 1.5, 0.001],
-    cameraAngle: [-HALF_PI, Math.PI]
+    cameraAngle: [-HALF_PI, Math.PI],
   },
   // FRONT
   {
     position: [0, -1, 0],
     size: [1.5, 0.001, 1.5],
-    cameraAngle: [-HALF_PI, HALF_PI]
+    cameraAngle: [-HALF_PI, HALF_PI],
   },
   // BACK
   {
     position: [0, 1, 0],
     size: [1.5, 0.001, 1.5],
-    cameraAngle: [HALF_PI, HALF_PI]
+    cameraAngle: [HALF_PI, HALF_PI],
   },
   // RIGHT
   {
     position: [1, 0, 0],
     size: [0.001, 1.5, 1.5],
-    cameraAngle: [0, HALF_PI]
+    cameraAngle: [0, HALF_PI],
   },
   // LEFT
   {
     position: [-1, 0, 0],
     size: [0.001, 1.5, 1.5],
-    cameraAngle: [-Math.PI, HALF_PI]
+    cameraAngle: [-Math.PI, HALF_PI],
   },
   // TOP-FRONT
   {
     position: [0, -0.876, 0.876],
     size: [1.5, 0.25, 0.25],
-    cameraAngle: [-HALF_PI, QUARTER_PI]
+    cameraAngle: [-HALF_PI, QUARTER_PI],
   },
   // TOP-LEFT
   {
     position: [-0.876, 0, 0.876],
     size: [0.25, 1.5, 0.25],
-    cameraAngle: [-Math.PI, QUARTER_PI]
+    cameraAngle: [-Math.PI, QUARTER_PI],
   },
   // TOP-BACK
   {
     position: [0, 0.876, 0.876],
     size: [1.5, 0.25, 0.25],
-    cameraAngle: [HALF_PI, QUARTER_PI]
+    cameraAngle: [HALF_PI, QUARTER_PI],
   },
   // TOP-RIGHT
   {
     position: [0.876, 0, 0.876],
     size: [0.25, 1.5, 0.25],
-    cameraAngle: [0, QUARTER_PI]
+    cameraAngle: [0, QUARTER_PI],
   },
   // BOTTOM-FRONT
   {
     position: [0, -0.876, -0.876],
     size: [1.5, 0.25, 0.25],
-    cameraAngle: [-HALF_PI, 3 * QUARTER_PI]
+    cameraAngle: [-HALF_PI, 3 * QUARTER_PI],
   },
   // BOTTOM-LEFT
   {
     position: [-0.876, 0, -0.876],
     size: [0.25, 1.5, 0.25],
-    cameraAngle: [-Math.PI, 3 * QUARTER_PI]
+    cameraAngle: [-Math.PI, 3 * QUARTER_PI],
   },
   // BOTTOM-BACK
   {
     position: [0, 0.876, -0.876],
     size: [1.5, 0.25, 0.25],
-    cameraAngle: [HALF_PI, 3 * QUARTER_PI]
+    cameraAngle: [HALF_PI, 3 * QUARTER_PI],
   },
   // BOTTOM-RIGHT
   {
     position: [0.876, 0, -0.876],
     size: [0.25, 1.5, 0.25],
-    cameraAngle: [0, 3 * QUARTER_PI]
+    cameraAngle: [0, 3 * QUARTER_PI],
   },
   // FRONT-LEFT
   {
     position: [-0.876, -0.876, 0],
     size: [0.25, 0.25, 1.5],
-    cameraAngle: [-3 * QUARTER_PI, HALF_PI]
+    cameraAngle: [-3 * QUARTER_PI, HALF_PI],
   },
   // FRONT-RIGHT
   {
     position: [0.876, -0.876, 0],
     size: [0.25, 0.25, 1.5],
-    cameraAngle: [-QUARTER_PI, HALF_PI]
+    cameraAngle: [-QUARTER_PI, HALF_PI],
   },
   // BACK-LEFT
   {
     position: [-0.876, 0.876, 0],
     size: [0.25, 0.25, 1.5],
-    cameraAngle: [3 * QUARTER_PI, HALF_PI]
+    cameraAngle: [3 * QUARTER_PI, HALF_PI],
   },
   // BACK-RIGHT
   {
     position: [0.876, 0.876, 0],
     size: [0.25, 0.25, 1.5],
-    cameraAngle: [QUARTER_PI, HALF_PI]
+    cameraAngle: [QUARTER_PI, HALF_PI],
   },
   // TOP-FRONT-LEFT
   {
     position: [-0.876, -0.876, 0.876],
     size: [0.25, 0.25, 0.25],
-    cameraAngle: [-3 * QUARTER_PI, QUARTER_PI]
+    cameraAngle: [-3 * QUARTER_PI, QUARTER_PI],
   },
   // TOP-FRONT-RIGHT
   {
     position: [0.876, -0.876, 0.876],
     size: [0.25, 0.25, 0.25],
-    cameraAngle: [-QUARTER_PI, QUARTER_PI]
+    cameraAngle: [-QUARTER_PI, QUARTER_PI],
   },
   // TOP-BACK-LEFT
   {
     position: [-0.876, 0.876, 0.876],
     size: [0.25, 0.25, 0.25],
-    cameraAngle: [3 * QUARTER_PI, QUARTER_PI]
+    cameraAngle: [3 * QUARTER_PI, QUARTER_PI],
   },
   // TOP-BACK-RIGHT
   {
     position: [0.876, 0.876, 0.876],
     size: [0.25, 0.25, 0.25],
-    cameraAngle: [QUARTER_PI, QUARTER_PI]
+    cameraAngle: [QUARTER_PI, QUARTER_PI],
   },
   // BOTTOM-FRONT-LEFT
   {
     position: [-0.876, -0.876, -0.876],
     size: [0.25, 0.25, 0.25],
-    cameraAngle: [-3 * QUARTER_PI, 3 * QUARTER_PI]
+    cameraAngle: [-3 * QUARTER_PI, 3 * QUARTER_PI],
   },
   // BOTTOM-FRONT-RIGHT
   {
     position: [0.876, -0.876, -0.876],
     size: [0.25, 0.25, 0.25],
-    cameraAngle: [-QUARTER_PI, 3 * QUARTER_PI]
+    cameraAngle: [-QUARTER_PI, 3 * QUARTER_PI],
   },
   // BOTTOM-BACK-LEFT
   {
     position: [-0.876, 0.876, -0.876],
     size: [0.25, 0.25, 0.25],
-    cameraAngle: [3 * QUARTER_PI, 3 * QUARTER_PI]
+    cameraAngle: [3 * QUARTER_PI, 3 * QUARTER_PI],
   },
   // BOTTOM-BACK-RIGHT
   {
     position: [0.876, 0.876, -0.876],
     size: [0.25, 0.25, 0.25],
-    cameraAngle: [QUARTER_PI, 3 * QUARTER_PI]
-  }
+    cameraAngle: [QUARTER_PI, 3 * QUARTER_PI],
+  },
 ];
 
 type ChangeCameraAngleHandler = (theta: number, phi: number) => void;
@@ -189,13 +217,13 @@ export interface INavigationBoxOptions {
 export default class NavigationBox {
   public static defaultOptions: INavigationBoxOptions = {
     boxLabels: {
-      front: "FRONT",
-      back: "BACK",
-      top: "TOP",
-      bottom: "BOTTOM",
-      left: "LEFT",
-      right: "RIGHT"
-    }
+      front: (messages && messages.FRONT) || 'FRONT',
+      back: (messages && messages.BACK) || 'BACK',
+      top: (messages && messages.TOP) || 'TOP',
+      bottom: (messages && messages.BOTTOM) || 'BOTTOM',
+      left: (messages && messages.LEFT) || 'LEFT',
+      right: (messages && messages.RIGHT) || 'RIGHT',
+    },
   };
 
   private container: HTMLElement;
@@ -214,7 +242,7 @@ export default class NavigationBox {
     this.container = container;
     this.options = {
       ...NavigationBox.defaultOptions,
-      ...options
+      ...options,
     };
 
     this.setup();
@@ -240,7 +268,7 @@ export default class NavigationBox {
   private async setup() {
     const rendererParams = {
       alpha: true,
-      antialias: true
+      antialias: true,
     };
 
     const renderer = new THREE.WebGLRenderer(rendererParams);
@@ -248,8 +276,8 @@ export default class NavigationBox {
     this.container.appendChild(renderer.domElement);
     this.renderer = renderer;
 
-    this.container.addEventListener("mousemove", this.onMouseMove);
-    this.container.addEventListener("click", this.onClick);
+    this.container.addEventListener('mousemove', this.onMouseMove);
+    this.container.addEventListener('click', this.onClick);
     this.containerRect = this.container.getBoundingClientRect();
 
     this.scene = new THREE.Scene();
@@ -265,23 +293,23 @@ export default class NavigationBox {
     const { boxLabels } = this.options;
     const cubeMaterials = [
       new THREE.MeshLambertMaterial({
-        map: this.getTextureForText(boxLabels.right, HALF_PI)
+        map: this.getTextureForText(boxLabels.right, HALF_PI),
       }),
       new THREE.MeshLambertMaterial({
-        map: this.getTextureForText(boxLabels.left, -HALF_PI)
+        map: this.getTextureForText(boxLabels.left, -HALF_PI),
       }),
       new THREE.MeshLambertMaterial({
-        map: this.getTextureForText(boxLabels.back, Math.PI)
+        map: this.getTextureForText(boxLabels.back, Math.PI),
       }),
       new THREE.MeshLambertMaterial({
-        map: this.getTextureForText(boxLabels.front)
+        map: this.getTextureForText(boxLabels.front),
       }),
       new THREE.MeshLambertMaterial({
-        map: this.getTextureForText(boxLabels.top)
+        map: this.getTextureForText(boxLabels.top),
       }),
       new THREE.MeshLambertMaterial({
-        map: this.getTextureForText(boxLabels.bottom, Math.PI)
-      })
+        map: this.getTextureForText(boxLabels.bottom, Math.PI),
+      }),
     ];
     const cube = new THREE.Mesh(boxGeometry, cubeMaterials);
     this.scene.add(cube);
@@ -292,7 +320,7 @@ export default class NavigationBox {
       const material = new THREE.MeshBasicMaterial({
         color: 0x4dc3ff,
         transparent: true,
-        opacity: 0
+        opacity: 0,
       });
       const box = new THREE.Mesh(geometry, material);
       box.position.set(...clickBox.position);
@@ -362,21 +390,21 @@ export default class NavigationBox {
   };
 
   private getTextureForText(text: string, rotation: number = 0): THREE.Texture {
-    const canvas = document.createElement("canvas");
-    const ctx = canvas.getContext("2d");
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
 
     canvas.width = 128;
     canvas.height = 128;
 
     if (ctx) {
-      ctx.font = "20px Roboto,Arial";
-      ctx.fillStyle = "#cccccc";
+      ctx.font = '20px Roboto,Arial';
+      ctx.fillStyle = '#cccccc';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
-      ctx.fillStyle = "black";
-      ctx.textAlign = "center";
-      ctx.textBaseline = "middle";
+      ctx.fillStyle = 'black';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
       ctx.fillText(
-        (text || "").toUpperCase(),
+        (text || '').toUpperCase(),
         canvas.width / 2,
         canvas.height / 2
       );
