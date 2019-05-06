@@ -5,34 +5,6 @@ const QUARTER_PI = Math.PI / 4;
 const WIDTH = 150;
 const HEIGHT = 150;
 
-// text literals
-
-// TO IMPROVE
-
-const language = navigator.language;
-const langCode = language.split('-')[0] || language;
-let messages: any;
-
-if (langCode === 'es') {
-  messages = {
-    TOP: 'SUPERIOR',
-    BOTTOM: 'INFERIOR',
-    RIGHT: 'DERECHA',
-    LEFT: 'IZQUIERDA',
-    FRONT: 'FRONTAL',
-    BACK: 'POSTERIOR',
-  };
-} else {
-  messages = {
-    TOP: 'TOP',
-    BOTTOM: 'BOTTOM',
-    RIGHT: 'RIGHT',
-    LEFT: 'LEFT',
-    FRONT: 'FRONT',
-    BACK: 'BACK',
-  };
-}
-
 interface IClickBox {
   position: [number, number, number];
   size: [number, number, number];
@@ -217,12 +189,12 @@ export interface INavigationBoxOptions {
 export default class NavigationBox {
   public static defaultOptions: INavigationBoxOptions = {
     boxLabels: {
-      front: (messages && messages.FRONT) || 'FRONT',
-      back: (messages && messages.BACK) || 'BACK',
-      top: (messages && messages.TOP) || 'TOP',
-      bottom: (messages && messages.BOTTOM) || 'BOTTOM',
-      left: (messages && messages.LEFT) || 'LEFT',
-      right: (messages && messages.RIGHT) || 'RIGHT',
+      front: 'FRONT',
+      back: 'BACK',
+      top: 'TOP',
+      bottom: 'BOTTOM',
+      left: 'LEFT',
+      right: 'RIGHT',
     },
   };
 
@@ -240,6 +212,7 @@ export default class NavigationBox {
     options: Partial<INavigationBoxOptions> = {}
   ) {
     this.container = container;
+
     this.options = {
       ...NavigationBox.defaultOptions,
       ...options,

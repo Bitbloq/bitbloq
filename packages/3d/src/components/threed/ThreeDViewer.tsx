@@ -1,16 +1,16 @@
-import * as React from "react";
-import { connect } from "react-redux";
-import styled from "@emotion/styled";
-import { selectObject, deselectAllObjects } from "../../actions/threed";
+import * as React from 'react';
+import { connect } from 'react-redux';
+import styled from '@emotion/styled';
+import { selectObject, deselectAllObjects } from '../../actions/threed';
 import {
   Scene,
   IHelperDescription,
   IObjectPosition,
   IObjectsCommonJSON,
-  Renderer
-} from "@bitbloq/lib3d";
-import { getSelectedObjects } from "../../reducers/threed/";
-import { Icon, withTranslate } from "@bitbloq/ui";
+  Renderer,
+} from '@bitbloq/lib3d';
+import { getSelectedObjects } from '../../reducers/threed/';
+import { Icon, withTranslate } from '@bitbloq/ui';
 
 const Container = styled.div`
   flex: 1;
@@ -69,7 +69,7 @@ const CameraButton = styled.div<CameraButtonProps>`
   border: 1px solid #cfcfcf;
 
   svg {
-    width: ${props => (props.wideIcon ? "18px" : "12px")};
+    width: ${props => (props.wideIcon ? '18px' : '12px')};
   }
 `;
 
@@ -106,7 +106,7 @@ class ThreeDViewer extends React.Component<
       scene,
       sceneObjects,
       selectedObjects,
-      activeOperation
+      activeOperation,
     } = this.props;
     if (sceneObjects !== prevProps.sceneObjects) {
       this.renderer.updateScene();
@@ -132,13 +132,13 @@ class ThreeDViewer extends React.Component<
     if (container) {
       this.renderer = new Renderer(scene, container, {
         navigationBoxLabels: {
-          top: t("navigation-top"),
-          bottom: t("navigation-bottom"),
-          left: t("navigation-left"),
-          right: t("navigation-right"),
-          front: t("navigation-front"),
-          back: t("navigation-back")
-        }
+          top: t('navigation-top'),
+          bottom: t('navigation-bottom'),
+          left: t('navigation-left'),
+          right: t('navigation-right'),
+          front: t('navigation-front'),
+          back: t('navigation-back'),
+        },
       });
       this.renderer.updateScene();
     }
@@ -205,7 +205,7 @@ class ThreeDViewer extends React.Component<
         <StatusBar>
           {selectedPosition && (
             <StatusBarGroup>
-              <b>{t("status-position")}</b>
+              <b>{t('status-position')}</b>
               <span>X={selectedPosition.position.x.toFixed(2)}</span>
               <span>Y={selectedPosition.position.y.toFixed(2)}</span>
               <span>Z={selectedPosition.position.z.toFixed(2)}</span>
@@ -213,7 +213,7 @@ class ThreeDViewer extends React.Component<
           )}
           {selectedPosition && (
             <StatusBarGroup>
-              <b>{t("status-rotation")}</b>
+              <b>{t('status-rotation')}</b>
               <span>X={selectedPosition.angle.x.toFixed(2)}</span>
               <span>Y={selectedPosition.angle.y.toFixed(2)}</span>
               <span>Z={selectedPosition.angle.z.toFixed(2)}</span>
@@ -231,12 +231,12 @@ const mapStateToProps = (state: any) => ({
   activeOperation: state.threed.ui.activeOperation,
   selectedObjects: getSelectedObjects(state.threed),
   controlPressed: state.ui.controlPressed,
-  shiftPressed: state.ui.shiftPressed
+  shiftPressed: state.ui.shiftPressed,
 });
 
 const mapDispatchToProps = {
   selectObject,
-  deselectAllObjects
+  deselectAllObjects,
 };
 
 export default connect(
