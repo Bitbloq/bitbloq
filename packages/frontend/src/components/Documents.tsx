@@ -108,6 +108,15 @@ const Documents: FC<{ id?: string }> = ({ id }) => {
   });
 
   useEffect(() => {
+    if (resultData && resultData.documentsAndFolders) {
+      const pagesNumber = resultData.documentsAndFolders.pagesNumber;
+      if (currentPage > pagesNumber) {
+        setCurrentPage(pagesNumber || 1);
+      }
+    }
+  }, [resultData]);
+
+  useEffect(() => {
     if (!loading && !errorQuery) {
       setError(null);
       setDocumentsData(resultData);
