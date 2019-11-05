@@ -71,6 +71,7 @@ const Documents: FC<{ id?: string }> = ({ id }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [folderTitleModal, setFolderTitleModal] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(8);
   const [currentLocation] = useState({
     id: id ? id : userData ? userData.rootFolder : null,
     name: "root"
@@ -101,7 +102,7 @@ const Documents: FC<{ id?: string }> = ({ id }) => {
       currentPage: currentPage,
       order: order,
       searchTitle: searchQuery,
-      itemsPerPage: 8
+      itemsPerPage
     },
     fetchPolicy: "cache-and-network"
   });
@@ -313,6 +314,7 @@ const Documents: FC<{ id?: string }> = ({ id }) => {
               order={order}
               searchTitle={searchText}
               selectPage={(page: number) => setCurrentPage(page)}
+              setItemsPerPage={setItemsPerPage}
               nFolders={nFolders}
             />
           </DndProvider>

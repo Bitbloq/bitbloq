@@ -1,4 +1,4 @@
-import React, { FC, useState } from "react";
+import React, { FC, useLayoutEffect, useRef, useState } from "react";
 import { useMutation } from "@apollo/react-hooks";
 import styled from "@emotion/styled";
 import { Icon, colors, DialogModal, DropDown } from "@bitbloq/ui";
@@ -35,6 +35,7 @@ export interface DocumentListProps {
   onDocumentClick?: (e) => any;
   refetchDocsFols: () => any;
   selectPage: (page: number) => void;
+  setItemsPerPage: (page: number) => void;
   nFolders: number;
 }
 
@@ -49,6 +50,7 @@ const DocumentListComp: FC<DocumentListProps> = ({
   onDocumentClick,
   refetchDocsFols,
   selectPage,
+  setItemsPerPage,
   nFolders
 }) => {
   const [deleteDoc, setDeleteDoc] = useState({
@@ -77,11 +79,43 @@ const DocumentListComp: FC<DocumentListProps> = ({
   const [draggingItemId, setDraggingItemId] = useState("");
   const [droppedItemId, setDroppedItemId] = useState("");
 
+  const docsAndFoldsRef = useRef<HTMLDivElement[]>(new Array(8));
+  const gridRef = useRef<HTMLDivElement>(null);
+
   const [createDocument] = useMutation(CREATE_DOCUMENT_MUTATION);
   const [updateDocument] = useMutation(UPDATE_DOCUMENT_MUTATION);
   const [deleteDocument] = useMutation(DELETE_DOCUMENT_MUTATION);
   const [updateFolder] = useMutation(UPDATE_FOLDER_MUTATION);
   const [deleteFolder] = useMutation(DELETE_FOLDER_MUTATION);
+
+  const checkItemsPerPage = () => {
+    const positionInit = gridRef.current ? gridRef.current.offsetTop : 0;
+    const positionLimit =
+      window.innerHeight - // window height
+      54 - // footer height
+      60 - // footer - paginator margin
+      34 - // paginator height
+      40; // paginator - list margin
+
+    let rows = gridRef.current
+      ? Math.floor((positionLimit - positionInit) / 240)
+      : 0;
+
+    const itemsPerRow = gridRef.current
+      ? Math.floor(
+          gridRef.current.clientWidth / docsAndFoldsRef.current[0].clientWidth
+        )
+      : 0;
+
+    if (currentPage !== pagesNumber && rows * itemsPerRow !== 0) {
+      setItemsPerPage(rows * itemsPerRow || 8);
+    }
+  };
+
+  useLayoutEffect(() => {
+    checkItemsPerPage();
+    window.addEventListener("resize", checkItemsPerPage);
+  });
 
   const [, drop] = useDrop({
     accept: ["document", "folder"],
@@ -286,10 +320,13 @@ const DocumentListComp: FC<DocumentListProps> = ({
   return (
     <>
       <DocumentsAndPaginator ref={drop}>
-        <DocumentList className={className}>
+        <DocumentList className={className} ref={gridRef}>
           {docsAndFols &&
-            docsAndFols.map((document: any) => (
+            docsAndFols.map((document: any, index: number) => (
               <StyledDocumentCard
+                ref={(el: HTMLDivElement) =>
+                  (docsAndFoldsRef.current[index] = el)
+                }
                 beginFunction={() => setDraggingItemId(document.id)}
                 endFunction={() => setDraggingItemId("")}
                 draggable={
