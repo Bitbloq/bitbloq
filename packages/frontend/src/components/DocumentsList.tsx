@@ -107,7 +107,7 @@ const DocumentListComp: FC<DocumentListProps> = ({
         )
       : 0;
 
-    if (currentPage !== pagesNumber && rows * itemsPerRow !== 0) {
+    if (rows * itemsPerRow !== 0) {
       setItemsPerPage(rows * itemsPerRow || 8);
     }
   };
