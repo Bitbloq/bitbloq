@@ -34,28 +34,34 @@ const OperationsList: FC<IOperationsListProps> = ({
   const prevOpenOperations = useRef(openOperations);
   const container = useRef<HTMLDivElement | null>(null);
 
-  useEffect(() => {
-    const newOperation = operations.find(
-      o => !prevOperations.current.some(p => p.id === o.id)
-    );
-    if (newOperation) {
-      setOpenOperations([...openOperations, newOperation.id!]);
-    }
-    prevOperations.current = operations;
-  }, [operations]);
-
-  useEffect(() => {
-    const lastOperation = operations[operations.length - 1] || {};
-    if (
-      openOperations.includes(lastOperation.id!) &&
-      !prevOpenOperations.current.includes(lastOperation.id!)
-    ) {
-      if (container.current) {
-        container.current.scrollTop = container.current.scrollHeight;
+  useEffect(
+    () => {
+      const newOperation = operations.find(
+        o => !prevOperations.current.some(p => p.id === o.id)
+      );
+      if (newOperation) {
+        setOpenOperations([...openOperations, newOperation.id!]);
       }
-    }
-    prevOpenOperations.current = openOperations;
-  }, [openOperations]);
+      prevOperations.current = operations;
+    },
+    [operations]
+  );
+
+  useEffect(
+    () => {
+      const lastOperation = operations[operations.length - 1] || {};
+      if (
+        openOperations.includes(lastOperation.id!) &&
+        !prevOpenOperations.current.includes(lastOperation.id!)
+      ) {
+        if (container.current) {
+          container.current.scrollTop = container.current.scrollHeight;
+        }
+      }
+      prevOpenOperations.current = openOperations;
+    },
+    [openOperations]
+  );
 
   const onOpen = useCallback(
     (operation: Lib3DOperation, isOpen: boolean) => {

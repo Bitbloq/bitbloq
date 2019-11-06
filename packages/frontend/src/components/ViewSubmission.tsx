@@ -25,7 +25,10 @@ interface IViewSubmissionState {
   tabIndex: number;
 }
 
-class ViewSubmission extends React.Component<IViewSubmissionProps, IViewSubmissionState> {
+class ViewSubmission extends React.Component<
+  IViewSubmissionProps,
+  IViewSubmissionState
+> {
   constructor(props) {
     super(props);
 

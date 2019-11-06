@@ -11,4 +11,3 @@ const SvgTraslation = props => (
 );
 
 export default SvgTraslation;
-

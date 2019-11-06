@@ -11,4 +11,3 @@ const SvgScale = props => (
 );
 
 export default SvgScale;
-

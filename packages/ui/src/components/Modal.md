@@ -9,9 +9,9 @@ initialState = { isOpen: false };
     title="Hello!"
     onClose={() => setState({ isOpen: false })}
   >
-    <div style={{ padding: '40px', width: '100px' }}>
+    <div style={{ padding: "40px", width: "100px" }}>
       <Button onClick={() => setState({ isOpen: false })}>Close</Button>
     </div>
   </Modal>
-</div>
+</div>;
 ```

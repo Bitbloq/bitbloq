@@ -11,4 +11,3 @@ const SvgStl = props => (
 );
 
 export default SvgStl;
-

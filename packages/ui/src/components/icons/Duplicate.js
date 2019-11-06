@@ -11,4 +11,3 @@ const SvgDuplicate = props => (
 );
 
 export default SvgDuplicate;
-

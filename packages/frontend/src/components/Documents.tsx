@@ -106,15 +106,18 @@ const Documents: FC<{ id?: string }> = ({ id }) => {
     fetchPolicy: "cache-and-network"
   });
 
-  useEffect(() => {
-    if (!loading && !errorQuery) {
-      setError(null);
-      setDocumentsData(resultData);
-    }
-    if (errorQuery) {
-      setError(errorQuery);
-    }
-  }, [loading, errorQuery]);
+  useEffect(
+    () => {
+      if (!loading && !errorQuery) {
+        setError(null);
+        setDocumentsData(resultData);
+      }
+      if (errorQuery) {
+        setError(errorQuery);
+      }
+    },
+    [loading, errorQuery]
+  );
 
   const [loadingExercise, setLoadingExercise] = useState(false);
   const [exerciseError, setExerciseError] = useState(false);

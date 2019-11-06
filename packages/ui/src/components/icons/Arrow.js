@@ -11,4 +11,3 @@ const SvgArrow1 = props => (
 );
 
 export default SvgArrow1;
-

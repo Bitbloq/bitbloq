@@ -17,25 +17,28 @@ const ForgotPasswordPage: FC = () => {
 
   const [resetPassword, { loading }] = useMutation(RESET_PASSWORD_MUTATION);
 
-  useEffect(() => {
-    let interval: number;
-    if (disableRetry) {
-      let time = retryTime;
-      interval = window.setInterval(() => {
-        if (time > 0) {
-          time = time - 1;
-          setRetryTime(time);
-        } else {
-          clearInterval(interval);
-          setDisableRetry(false);
-        }
-      }, 1000);
-    }
+  useEffect(
+    () => {
+      let interval: number;
+      if (disableRetry) {
+        let time = retryTime;
+        interval = window.setInterval(() => {
+          if (time > 0) {
+            time = time - 1;
+            setRetryTime(time);
+          } else {
+            clearInterval(interval);
+            setDisableRetry(false);
+          }
+        }, 1000);
+      }
 
-    return () => {
-      clearInterval(interval);
-    };
-  }, [disableRetry])
+      return () => {
+        clearInterval(interval);
+      };
+    },
+    [disableRetry]
+  );
 
   const onSendClick = async () => {
     try {
@@ -139,4 +142,3 @@ const Buttons = styled.div`
   display: flex;
   justify-content: space-between;
 `;
-

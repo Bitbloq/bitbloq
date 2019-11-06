@@ -11,4 +11,3 @@ const SvgPencil = props => (
 );
 
 export default SvgPencil;
-

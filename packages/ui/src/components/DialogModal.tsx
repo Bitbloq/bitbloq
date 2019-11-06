@@ -104,7 +104,7 @@ interface HeaderProps {
 }
 const Header = styled.div<HeaderProps>`
   height: 60px;
-  margin-bottom: ${(props: HeaderProps) => props.horizontalRule ? 40 : 0}px;
+  margin-bottom: ${(props: HeaderProps) => (props.horizontalRule ? 40 : 0)}px;
   position: relative;
 `;
 

@@ -10,4 +10,3 @@ const SvgDownloadDocument = props => (
 );
 
 export default SvgDownloadDocument;
-

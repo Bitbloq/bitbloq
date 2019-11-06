@@ -11,4 +11,3 @@ const SvgAirplane = props => (
 );
 
 export default SvgAirplane;
-

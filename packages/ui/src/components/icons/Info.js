@@ -11,4 +11,3 @@ const SvgDescription = props => (
 );
 
 export default SvgDescription;
-

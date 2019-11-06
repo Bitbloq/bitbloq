@@ -1,9 +1,9 @@
-import React from 'react';
-import styled from '@emotion/styled';
-import {css} from '@emotion/core';
-import chroma from 'chroma-js';
-import {SwatchesPicker} from 'react-color';
-import DropDown from './DropDown';
+import React from "react";
+import styled from "@emotion/styled";
+import { css } from "@emotion/core";
+import chroma from "chroma-js";
+import { SwatchesPicker } from "react-color";
+import DropDown from "./DropDown";
 
 const Container = styled.div`
   display: inline-block;
@@ -14,9 +14,11 @@ const SquareWrap = styled.div`
   border: 1px solid #cfcfcf;
   border-radius: 4px;
 
-  ${props => props.isOpen && css`
-    border: 1px solid #5d6069;
-  `};
+  ${props =>
+    props.isOpen &&
+    css`
+      border: 1px solid #5d6069;
+    `};
 `;
 
 const Square = styled.div`
@@ -36,14 +38,14 @@ const PickerWrap = styled.div`
 
 export default class ColorPicker extends React.Component {
   static defaultProps = {
-    format: 'hex',
-    color: '#fff',
+    format: "hex",
+    color: "#fff"
   };
 
   onColorChange = color => {
-    const {onChange, format} = this.props;
+    const { onChange, format } = this.props;
     if (onChange) {
-      if (format === 'number') {
+      if (format === "number") {
         onChange(chroma(color.hex).num());
       } else {
         onChange(color.hex);
@@ -52,17 +54,17 @@ export default class ColorPicker extends React.Component {
   };
 
   render() {
-    const {color, className, position} = this.props;
+    const { color, className, position } = this.props;
     const colorHex = chroma(color).hex();
 
     return (
       <Container className={className}>
         <DropDown>
-          {isOpen =>
+          {isOpen => (
             <SquareWrap isOpen={isOpen}>
               <Square color={colorHex} />
             </SquareWrap>
-          }
+          )}
           <PickerWrap>
             <SwatchesPicker
               width={288}

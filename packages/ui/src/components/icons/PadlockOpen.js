@@ -10,4 +10,3 @@ const SvgPadlockOpen = props => (
 );
 
 export default SvgPadlockOpen;
-

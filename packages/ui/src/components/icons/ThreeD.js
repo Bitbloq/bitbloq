@@ -11,4 +11,3 @@ const Svg3D = props => (
 );
 
 export default Svg3D;
-

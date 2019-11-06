@@ -12,7 +12,11 @@ const ExportSTLModal: FC<ExportSTLModalProps> = ({ onSave, onCancel }) => {
   const [separate, setSeparate] = useState(false);
 
   return (
-    <Modal isOpen={true} title="Exportar la escena en formato STL" onClose={onCancel}>
+    <Modal
+      isOpen={true}
+      title="Exportar la escena en formato STL"
+      onClose={onCancel}
+    >
       <Content>
         <FormGroup>
           <label>Nombre del archivo</label>

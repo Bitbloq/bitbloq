@@ -46,4 +46,3 @@ const SvgLoop = props => (
 );
 
 export default SvgLoop;
-

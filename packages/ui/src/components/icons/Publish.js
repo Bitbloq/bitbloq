@@ -11,4 +11,3 @@ const SvgPublish = props => (
 );
 
 export default SvgPublish;
-

@@ -45,10 +45,13 @@ const Playground: React.FunctionComponent<PlaygroundProps> = ({
 
   const t = useTranslate();
 
-  useEffect(() => {
-    setUserLogged(data && data.me);
-    setUserName(data && data.me && data.me.name);
-  }, [loadingQuery]);
+  useEffect(
+    () => {
+      setUserLogged(data && data.me);
+      setUserName(data && data.me && data.me.name);
+    },
+    [loadingQuery]
+  );
 
   useEffect(() => {
     const channel = new BroadcastChannel("bitbloq-landing");
@@ -71,16 +74,19 @@ const Playground: React.FunctionComponent<PlaygroundProps> = ({
     };
   }, []);
 
-  useEffect(() => {
-    if (userLogged) {
-      refetch().then(
-        result => (
-          setUserName(result.data.me.name),
-          createDocument(result.data.me.rootFolder)
-        )
-      );
-    }
-  }, [userLogged]);
+  useEffect(
+    () => {
+      if (userLogged) {
+        refetch().then(
+          result => (
+            setUserName(result.data.me.name),
+            createDocument(result.data.me.rootFolder)
+          )
+        );
+      }
+    },
+    [userLogged]
+  );
 
   const createDocument = async (folderID?: string) => {
     const title: string = "playground";

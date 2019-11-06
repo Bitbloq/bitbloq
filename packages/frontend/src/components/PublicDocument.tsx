@@ -42,19 +42,22 @@ const PublicDocument: FC<PublicDocumentProps> = ({ id, type }) => {
     setIsRestartModalVisible(false);
   };
 
-  useEffect(() => {
-    if (document && document.content) {
-      try {
-        const c = JSON.parse(document.content);
-        setInitialContent(c);
-        restart();
-        setContent(c);
-        setContentLoaded(true);
-      } catch (e) {
-        console.warn("Error parsing document content", e);
+  useEffect(
+    () => {
+      if (document && document.content) {
+        try {
+          const c = JSON.parse(document.content);
+          setInitialContent(c);
+          restart();
+          setContent(c);
+          setContentLoaded(true);
+        } catch (e) {
+          console.warn("Error parsing document content", e);
+        }
       }
-    }
-  }, [document]);
+    },
+    [document]
+  );
 
   if (error) return <GraphQLErrorMessage apolloError={error} />;
   if (loading || !contentLoaded) return <Loading color={documentType.color} />;

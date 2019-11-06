@@ -10,7 +10,11 @@ export interface UploadSpinnerProps {
   onClick: (e: React.MouseEvent) => any;
 }
 
-const UploadSpinner: FC<UploadSpinnerProps> = ({ uploading, success, onClick }) => {
+const UploadSpinner: FC<UploadSpinnerProps> = ({
+  uploading,
+  success,
+  onClick
+}) => {
   let icon = "";
   if (uploading) {
     icon = "brain";
@@ -24,7 +28,7 @@ const UploadSpinner: FC<UploadSpinnerProps> = ({ uploading, success, onClick }) 
     <Overlay onClick={onClick}>
       <Container uploading={uploading} success={success}>
         <Icon name={icon} />
-        <Spinner uploading={uploading} success={success}/>
+        <Spinner uploading={uploading} success={success} />
       </Container>
     </Overlay>
   );

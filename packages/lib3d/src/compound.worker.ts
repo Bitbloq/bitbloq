@@ -189,9 +189,7 @@ ctx.addEventListener(
       const _vertices = new Float32Array(
         buffGeom.getAttribute("position").array
       );
-      const _normals = new Float32Array(
-        buffGeom.getAttribute("normal").array
-      );
+      const _normals = new Float32Array(buffGeom.getAttribute("normal").array);
 
       const _message = {
         vertices: _vertices,
@@ -213,9 +211,7 @@ ctx.addEventListener(
       const _vertices = new Float32Array(
         buffGeom.getAttribute("position").array
       );
-      const _normals = new Float32Array(
-        buffGeom.getAttribute("normal").array
-      );
+      const _normals = new Float32Array(buffGeom.getAttribute("normal").array);
 
       const _message = {
         vertices: _vertices,
@@ -268,10 +264,7 @@ ctx.addEventListener(
       status: "ok"
     };
 
-    ctx.postMessage(message, [
-      message.vertices.buffer,
-      message.normals.buffer
-    ]);
+    ctx.postMessage(message, [message.vertices.buffer, message.normals.buffer]);
   },
 
   false

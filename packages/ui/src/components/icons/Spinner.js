@@ -11,4 +11,3 @@ const SvgSpinner = props => (
 );
 
 export default SvgSpinner;
-

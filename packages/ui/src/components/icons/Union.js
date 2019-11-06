@@ -7,4 +7,3 @@ const SvgUnion = props => (
 );
 
 export default SvgUnion;
-

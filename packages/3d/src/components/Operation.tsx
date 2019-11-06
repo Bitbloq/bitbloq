@@ -57,9 +57,12 @@ const Operation: FC<IOperationProps> = ({
 
   const title = advancedMode || !basicLabel ? t(label!) : t(basicLabel);
 
-  const onTitleClick = useCallback(() => {
-    onOpen(operation, !isOpen);
-  }, [isOpen, onOpen]);
+  const onTitleClick = useCallback(
+    () => {
+      onOpen(operation, !isOpen);
+    },
+    [isOpen, onOpen]
+  );
 
   return (
     <Draggable draggableId={operation.id!} index={index}>
@@ -156,13 +159,19 @@ const OperationParameter: FC<IOperationParameterProps> = ({
     [operation, parameter, onParameterChange]
   );
 
-  const onInputFocus = useCallback(() => {
-    onParameterFocus(operation, parameter);
-  }, [operation, parameter, onParameterFocus]);
+  const onInputFocus = useCallback(
+    () => {
+      onParameterFocus(operation, parameter);
+    },
+    [operation, parameter, onParameterFocus]
+  );
 
-  const onInputBlur = useCallback(() => {
-    onParameterBlur(operation, parameter);
-  }, [operation, parameter, onParameterBlur]);
+  const onInputBlur = useCallback(
+    () => {
+      onParameterBlur(operation, parameter);
+    },
+    [operation, parameter, onParameterBlur]
+  );
 
   if (
     (parameter.advancedMode && !advancedMode) ||

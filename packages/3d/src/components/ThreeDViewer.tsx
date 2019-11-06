@@ -129,29 +129,41 @@ const ThreeDViewer: FC<IThreeDViewerProps> = ({
     };
   }, []);
 
-  useEffect(() => {
-    if (rendererRef.current) {
-      rendererRef.current.setScene(scene);
-    }
-  }, [scene]);
+  useEffect(
+    () => {
+      if (rendererRef.current) {
+        rendererRef.current.setScene(scene);
+      }
+    },
+    [scene]
+  );
 
-  useEffect(() => {
-    updateScene();
-  }, [sceneObjects]);
-
-  useEffect(() => {
-    updateStatusBar();
-    if (scene) {
-      scene.selectedObjects(selectedObjects);
+  useEffect(
+    () => {
       updateScene();
-    }
-  }, [selectedObjects]);
+    },
+    [sceneObjects]
+  );
 
-  useEffect(() => {
-    if (rendererRef.current) {
-      rendererRef.current.setActiveHelper(activeOperation);
-    }
-  }, [activeOperation]);
+  useEffect(
+    () => {
+      updateStatusBar();
+      if (scene) {
+        scene.selectedObjects(selectedObjects);
+        updateScene();
+      }
+    },
+    [selectedObjects]
+  );
+
+  useEffect(
+    () => {
+      if (rendererRef.current) {
+        rendererRef.current.setActiveHelper(activeOperation);
+      }
+    },
+    [activeOperation]
+  );
 
   return (
     <Container ref={containerRef}>

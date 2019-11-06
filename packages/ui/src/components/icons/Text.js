@@ -11,4 +11,3 @@ const SvgText = props => (
 );
 
 export default SvgText;
-

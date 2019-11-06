@@ -11,4 +11,3 @@ const SvgDocumentExercise = props => (
 );
 
 export default SvgDocumentExercise;
-

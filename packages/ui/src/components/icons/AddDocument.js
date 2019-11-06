@@ -12,4 +12,3 @@ const SvgAddDocument = props => (
 );
 
 export default SvgAddDocument;
-

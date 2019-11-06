@@ -1,10 +1,6 @@
 import React from "react";
 import { Junior } from "@bitbloq/junior";
-import {
-  bloqTypes,
-  boards,
-  components
-} from "../config";
+import { bloqTypes, boards, components } from "../config";
 import { EditorProps } from "../types";
 
 const JuniorEditor: React.FunctionComponent<EditorProps> = ({

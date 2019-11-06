@@ -4,12 +4,10 @@ import styled from "@emotion/styled";
 import { colors, Icon } from "@bitbloq/ui";
 
 export interface IMenuButtonProps {
-  isOpen: boolean,
+  isOpen: boolean;
 }
 
-const MenuButton: FC<IMenuButtonProps> = ({
-  isOpen
-}) => {
+const MenuButton: FC<IMenuButtonProps> = ({ isOpen }) => {
   return (
     <Button isOpen={isOpen}>
       <Icon name="ellipsis" />

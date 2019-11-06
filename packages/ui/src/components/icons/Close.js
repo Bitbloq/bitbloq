@@ -11,4 +11,3 @@ const SvgClose = props => (
 );
 
 export default SvgClose;
-

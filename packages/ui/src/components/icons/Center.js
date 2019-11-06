@@ -11,4 +11,3 @@ const SvgCenter = props => (
 );
 
 export default SvgCenter;
-

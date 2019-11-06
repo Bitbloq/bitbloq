@@ -77,4 +77,3 @@ const SvgLoopImage = props => (
 );
 
 export default SvgLoopImage;
-

@@ -38,12 +38,15 @@ const ObjectTree: FC<IObjectTreeProps> = ({
   const [collapsedItems, setCollapsedItems] = useState<string[]>([]);
   const [objectsLoaded, setObjectsLoaded] = useState(false);
 
-  useEffect(() => {
-    if (objects && objects.length && !objectsLoaded) {
-      setCollapsedItems(getChildrenIds(objects));
-      setObjectsLoaded(true);
-    }
-  }, [objects]);
+  useEffect(
+    () => {
+      if (objects && objects.length && !objectsLoaded) {
+        setCollapsedItems(getChildrenIds(objects));
+        setObjectsLoaded(true);
+      }
+    },
+    [objects]
+  );
 
   const t = useTranslate();
 

@@ -12,4 +12,3 @@ const SvgDocumentExample = props => (
 );
 
 export default SvgDocumentExample;
-

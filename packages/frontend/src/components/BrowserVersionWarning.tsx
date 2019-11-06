@@ -16,10 +16,9 @@ const BrowserVersionWarning: React.SFC<IBrowserVersionWarningProps> = ({
       <h2>Aviso</h2>
       <p>
         Hemos detectado que el navegador que estas utilizando no es compatible
-        con Bitbloq. Para hacer un uso
-        optimo de la herramienta, asegúrate de utilizar{" "}
-        <b>Google Chrome con la versión {version} o superior</b>. Puedes
-        descargarlo haciendo clic en{" "}
+        con Bitbloq. Para hacer un uso optimo de la herramienta, asegúrate de
+        utilizar <b>Google Chrome con la versión {version} o superior</b>.
+        Puedes descargarlo haciendo clic en{" "}
         <a href="https://www.google.com/chrome/">este enlace</a>.
       </p>
     </WarningModal>

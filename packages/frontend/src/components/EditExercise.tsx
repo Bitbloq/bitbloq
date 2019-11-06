@@ -65,43 +65,52 @@ const EditExercise = ({ type, id }) => {
     setToken("", "exercise-team");
   }, []);
 
-  useEffect(() => {
-    if (!loginVisible) {
-      loadSubmission();
-    }
-  }, [loginVisible]);
-
-  useEffect(() => {
-    if (exercise && teamName) {
-      const setActiveToFalse = () => {
-        updateSubmission({
-          variables: {
-            active: false
-          }
-        });
-      };
-
-      window.addEventListener("beforeunload", setActiveToFalse, true);
-
-      return () => {
-        setActiveToFalse();
-        window.removeEventListener("beforeunload", setActiveToFalse, true);
-      };
-    } else {
-      return () => {};
-    }
-  }, [teamName]);
-
-  useEffect(() => {
-    if (exercise && exercise.content) {
-      try {
-        const content = JSON.parse(data.exercise.content);
-        setInitialContent(content);
-      } catch (e) {
-        console.warn("Error parsing submission content", e);
+  useEffect(
+    () => {
+      if (!loginVisible) {
+        loadSubmission();
       }
-    }
-  }, [exercise]);
+    },
+    [loginVisible]
+  );
+
+  useEffect(
+    () => {
+      if (exercise && teamName) {
+        const setActiveToFalse = () => {
+          updateSubmission({
+            variables: {
+              active: false
+            }
+          });
+        };
+
+        window.addEventListener("beforeunload", setActiveToFalse, true);
+
+        return () => {
+          setActiveToFalse();
+          window.removeEventListener("beforeunload", setActiveToFalse, true);
+        };
+      } else {
+        return () => {};
+      }
+    },
+    [teamName]
+  );
+
+  useEffect(
+    () => {
+      if (exercise && exercise.content) {
+        try {
+          const content = JSON.parse(data.exercise.content);
+          setInitialContent(content);
+        } catch (e) {
+          console.warn("Error parsing submission content", e);
+        }
+      }
+    },
+    [exercise]
+  );
 
   if (loading) return <Loading />;
   if (error) return <GraphQLErrorMessage apolloError={error} />;

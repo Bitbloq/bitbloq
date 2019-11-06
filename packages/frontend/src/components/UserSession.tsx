@@ -12,11 +12,9 @@ const UserSession = () => {
   return (
     <>
       <UserName>{userData && userData.name}</UserName>
-      <UserAvatar src={userData ? userData.avatar : ''} />
+      <UserAvatar src={userData ? userData.avatar : ""} />
       <DropDown>
-        {(isOpen: boolean) => (
-          <MenuButton isOpen={isOpen} />
-        )}
+        {(isOpen: boolean) => <MenuButton isOpen={isOpen} />}
         <ContextMenu>
           <ContextMenuOption onClick={() => logout()}>
             Cerrar sesión

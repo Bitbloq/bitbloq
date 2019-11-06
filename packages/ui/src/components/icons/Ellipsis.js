@@ -11,4 +11,3 @@ const SvgEllipsis = props => (
 );
 
 export default SvgEllipsis;
-

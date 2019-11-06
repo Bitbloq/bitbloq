@@ -11,4 +11,3 @@ const SvgBrush = props => (
 );
 
 export default SvgBrush;
-

@@ -11,4 +11,3 @@ const SvgLess = props => (
 );
 
 export default SvgLess;
-

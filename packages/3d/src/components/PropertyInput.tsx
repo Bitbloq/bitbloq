@@ -69,12 +69,15 @@ const PropertyInput: FC<IPropertyInputProps> = ({
     [onChange]
   );
 
-  const onInputBlur = useCallback(() => {
-    setError(false);
-    if (onBlur) {
-      onBlur();
-    }
-  }, [onBlur]);
+  const onInputBlur = useCallback(
+    () => {
+      setError(false);
+      if (onBlur) {
+        onBlur();
+      }
+    },
+    [onBlur]
+  );
 
   const commonProps = {
     value: error ? errorValue : value,

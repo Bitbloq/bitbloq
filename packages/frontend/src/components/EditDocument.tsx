@@ -68,39 +68,45 @@ const EditDocument: FC<EditDocumentProps> = ({ folder, id, type }) => {
     skip: isNew
   });
 
-  useEffect(() => {
-    imageToUpload.current;
-    if (firstLoad) {
-      saveImage();
-      if (
-        document &&
-        document.id &&
-        image &&
-        image.isSnapshot &&
-        imageToUpload.current &&
-        imageToUpload.current.size > 0
-      ) {
-        updateImage(document.id);
-        setFirstLoad(false);
-        setInterval(updateImage, 10 * 60 * 1000, document.id);
+  useEffect(
+    () => {
+      imageToUpload.current;
+      if (firstLoad) {
+        saveImage();
+        if (
+          document &&
+          document.id &&
+          image &&
+          image.isSnapshot &&
+          imageToUpload.current &&
+          imageToUpload.current.size > 0
+        ) {
+          updateImage(document.id);
+          setFirstLoad(false);
+          setInterval(updateImage, 10 * 60 * 1000, document.id);
+        }
       }
-    }
-  }, [imageToUpload.current]);
+    },
+    [imageToUpload.current]
+  );
 
-  useEffect(() => {
-    if (isNew) {
-      setLoading(false);
-      setError(null);
-    } else if (!loadingDocument && !errorDocument) {
-      setDocument(data.document);
-      setImage(data.document && data.document.image);
-      setLoading(false);
-      setError(null);
-    } else if (errorDocument) {
-      setError(errorDocument);
-      setLoading(false);
-    }
-  }, [loadingDocument]);
+  useEffect(
+    () => {
+      if (isNew) {
+        setLoading(false);
+        setError(null);
+      } else if (!loadingDocument && !errorDocument) {
+        setDocument(data.document);
+        setImage(data.document && data.document.image);
+        setLoading(false);
+        setError(null);
+      } else if (errorDocument) {
+        setError(errorDocument);
+        setLoading(false);
+      }
+    },
+    [loadingDocument]
+  );
 
   const [createDocument] = useMutation(CREATE_DOCUMENT_MUTATION);
   const [updateDocument] = useMutation(UPDATE_DOCUMENT_MUTATION);
@@ -161,9 +167,12 @@ const EditDocument: FC<EditDocumentProps> = ({ folder, id, type }) => {
     [id]
   );
 
-  useEffect(() => {
-    setImage(data && data.document && data.document.image);
-  }, [data]);
+  useEffect(
+    () => {
+      setImage(data && data.document && data.document.image);
+    },
+    [data]
+  );
 
   const dataURItoBlob = (dataURI: string): Blob => {
     // convert base64/URLEncoded data component to raw binary data held in a string
@@ -246,7 +255,9 @@ const EditDocument: FC<EditDocumentProps> = ({ folder, id, type }) => {
   window.sessionStorage.setItem("advancedMode", `${advancedMode}`);
 
   const location = window.location;
-  const publicUrl = `${location.protocol}//${location.host}/app/public-document/${type}/${id}`;
+  const publicUrl = `${location.protocol}//${
+    location.host
+  }/app/public-document/${type}/${id}`;
 
   const EditorComponent = documentType.editorComponent;
 

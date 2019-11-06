@@ -58,35 +58,44 @@ const Junior: React.FunctionComponent<JuniorProps> = ({
     components: []
   };
 
-  useEffect(() => {
-    if (content !== initialContent) {
-      onContentChange(content);
-    }
-  }, [content]);
+  useEffect(
+    () => {
+      if (content !== initialContent) {
+        onContentChange(content);
+      }
+    },
+    [content]
+  );
 
   const [uploadSpinnerVisible, setUploadSpinnerVisible] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [uploadingSuccess, setUploadingSuccess] = useState(false);
 
   const hideTimeout = useRef(0);
-  useEffect(() => {
-    if (uploading) {
-      setUploadSpinnerVisible(true);
-    }
+  useEffect(
+    () => {
+      if (uploading) {
+        setUploadSpinnerVisible(true);
+      }
 
-    if (!uploading) {
-      hideTimeout.current = setTimeout(() => {
-        setUploadSpinnerVisible(false);
-      }, 5000);
-    }
-  }, [uploading]);
+      if (!uploading) {
+        hideTimeout.current = setTimeout(() => {
+          setUploadSpinnerVisible(false);
+        }, 5000);
+      }
+    },
+    [uploading]
+  );
 
-  useEffect(() => {
-    if (!uploadSpinnerVisible && hideTimeout.current) {
-      clearTimeout(hideTimeout.current);
-      hideTimeout.current = 0;
-    }
-  }, [uploadSpinnerVisible]);
+  useEffect(
+    () => {
+      if (!uploadSpinnerVisible && hideTimeout.current) {
+        clearTimeout(hideTimeout.current);
+        hideTimeout.current = 0;
+      }
+    },
+    [uploadSpinnerVisible]
+  );
 
   const board: IBoard = getBoardDefinition(boards, hardware);
   if (hardware.components.length === 0) {

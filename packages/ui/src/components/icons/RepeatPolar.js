@@ -11,4 +11,3 @@ const SvgRepeatPolar = props => (
 );
 
 export default SvgRepeatPolar;
-

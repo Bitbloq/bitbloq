@@ -83,4 +83,3 @@ const SvgBulb = ({ isOn, ...props }) => (
 );
 
 export default SvgBulb;
-

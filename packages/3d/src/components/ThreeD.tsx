@@ -101,11 +101,14 @@ const ThreeD: React.FC<IThreeDProps> = ({
     initialObjectsRef.current = initialObjects;
   }, []);
 
-  useEffect(() => {
-    if (objects !== initialObjectsRef.current) {
-      onContentChange(objects);
-    }
-  }, [objects]);
+  useEffect(
+    () => {
+      if (objects !== initialObjectsRef.current) {
+        onContentChange(objects);
+      }
+    },
+    [objects]
+  );
 
   const scene = sceneRef.current || new Scene();
 
@@ -185,119 +188,131 @@ const ThreeD: React.FC<IThreeDProps> = ({
   const [advancedMode, setAdvancedMode] = useState(documentAdvancedMode);
   const previousAdvancedMode = useRef<boolean>(advancedMode);
 
-  useEffect(() => {
-    if (advancedMode && !previousAdvancedMode.current) {
-      // Convert operations to advance mode
-      objects.forEach(object => () => {
-        const operations: Operation[] = [];
-        object.operations.forEach(operation => {
-          if (isTranslateOperation(operation)) {
-            if (operation.x !== 0 || operation.y !== 0 || operation.z !== 0) {
-              operations.push(operation);
+  useEffect(
+    () => {
+      if (advancedMode && !previousAdvancedMode.current) {
+        // Convert operations to advance mode
+        objects.forEach(object => () => {
+          const operations: Operation[] = [];
+          object.operations.forEach(operation => {
+            if (isTranslateOperation(operation)) {
+              if (operation.x !== 0 || operation.y !== 0 || operation.z !== 0) {
+                operations.push(operation);
+              }
             }
-          }
-          if (isRotationOperation(operation)) {
-            if (operation.x !== 0) {
-              operations.push(
-                Object3D.createRotateOperation(operation.x, 0, 0)
-              );
+            if (isRotationOperation(operation)) {
+              if (operation.x !== 0) {
+                operations.push(
+                  Object3D.createRotateOperation(operation.x, 0, 0)
+                );
+              }
+              if (operation.y !== 0) {
+                operations.push(
+                  Object3D.createRotateOperation(0, operation.y, 0)
+                );
+              }
+              if (operation.z !== 0) {
+                operations.push(
+                  Object3D.createRotateOperation(0, 0, operation.z)
+                );
+              }
             }
-            if (operation.y !== 0) {
-              operations.push(
-                Object3D.createRotateOperation(0, operation.y, 0)
-              );
+            if (isScaleOperation(operation)) {
+              if (operation.x !== 1 || operation.y !== 1 || operation.z !== 1) {
+                operations.push(operation);
+              }
             }
-            if (operation.z !== 0) {
-              operations.push(
-                Object3D.createRotateOperation(0, 0, operation.z)
-              );
-            }
-          }
-          if (isScaleOperation(operation)) {
-            if (operation.x !== 1 || operation.y !== 1 || operation.z !== 1) {
-              operations.push(operation);
-            }
-          }
+          });
+          setObjects(scene.updateObject({ ...object, operations }));
         });
-        setObjects(scene.updateObject({ ...object, operations }));
-      });
-    }
+      }
 
-    if (!advancedMode && previousAdvancedMode.current) {
-      // Convert operations to basic mode
-      objects.forEach(object => () => {
-        const { position, angle, scale } = scene.getLocalPosition(object);
-        setObjects(
-          scene.updateObject({
-            ...object,
-            operations: [
-              Object3D.createTranslateOperation(
-                position.x,
-                position.y,
-                position.z
-              ),
-              Object3D.createRotateOperation(angle.x, angle.y, angle.z),
-              Object3D.createScaleOperation(scale.x, scale.y, scale.z)
-            ]
-          })
-        );
-      });
-    }
-  }, [advancedMode]);
+      if (!advancedMode && previousAdvancedMode.current) {
+        // Convert operations to basic mode
+        objects.forEach(object => () => {
+          const { position, angle, scale } = scene.getLocalPosition(object);
+          setObjects(
+            scene.updateObject({
+              ...object,
+              operations: [
+                Object3D.createTranslateOperation(
+                  position.x,
+                  position.y,
+                  position.z
+                ),
+                Object3D.createRotateOperation(angle.x, angle.y, angle.z),
+                Object3D.createScaleOperation(scale.x, scale.y, scale.z)
+              ]
+            })
+          );
+        });
+      }
+    },
+    [advancedMode]
+  );
 
   // Keyboard handling
   const [controlPressed, setControlPressed] = useState(false);
   const [shiftPressed, setShiftPressed] = useState(false);
 
-  const onUndo = useCallback(() => {
-    setObjects(scene.undo());
-  }, [scene]);
+  const onUndo = useCallback(
+    () => {
+      setObjects(scene.undo());
+    },
+    [scene]
+  );
 
-  const onRedo = useCallback(() => {
-    setObjects(scene.redo());
-  }, [scene]);
+  const onRedo = useCallback(
+    () => {
+      setObjects(scene.redo());
+    },
+    [scene]
+  );
 
-  useEffect(() => {
-    let control = false;
-    let shift = false;
-    const onKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Control") {
-        control = true;
-        setControlPressed(true);
-      }
-      if (e.key === "Shift") {
-        shift = true;
-        setShiftPressed(true);
-      }
-      if (e.key === "z" && control) {
-        if (scene.canUndo()) {
-          setObjects(scene.undo());
+  useEffect(
+    () => {
+      let control = false;
+      let shift = false;
+      const onKeyDown = (e: KeyboardEvent) => {
+        if (e.key === "Control") {
+          control = true;
+          setControlPressed(true);
         }
-      }
-      if (e.key === "Z" && control) {
-        if (scene.canRedo()) {
-          setObjects(scene.redo());
+        if (e.key === "Shift") {
+          shift = true;
+          setShiftPressed(true);
         }
-      }
-    };
+        if (e.key === "z" && control) {
+          if (scene.canUndo()) {
+            setObjects(scene.undo());
+          }
+        }
+        if (e.key === "Z" && control) {
+          if (scene.canRedo()) {
+            setObjects(scene.redo());
+          }
+        }
+      };
 
-    const onKeyUp = (e: KeyboardEvent) => {
-      if (e.key === "Control") {
-        setControlPressed(false);
-      }
-      if (e.key === "Shift") {
-        setShiftPressed(false);
-      }
-    };
+      const onKeyUp = (e: KeyboardEvent) => {
+        if (e.key === "Control") {
+          setControlPressed(false);
+        }
+        if (e.key === "Shift") {
+          setShiftPressed(false);
+        }
+      };
 
-    document.addEventListener("keydown", onKeyDown);
-    document.addEventListener("keyup", onKeyUp);
+      document.addEventListener("keydown", onKeyDown);
+      document.addEventListener("keyup", onKeyUp);
 
-    return () => {
-      document.removeEventListener("keydown", onKeyDown);
-      document.removeEventListener("keyup", onKeyUp);
-    };
-  }, [scene]);
+      return () => {
+        document.removeEventListener("keydown", onKeyDown);
+        document.removeEventListener("keyup", onKeyUp);
+      };
+    },
+    [scene]
+  );
 
   const onSelectObject = (object: IObjectsCommonJSON) => {
     if (controlPressed || shiftPressed) {
@@ -338,28 +353,33 @@ const ThreeD: React.FC<IThreeDProps> = ({
     setSelectedIds([]);
   };
 
-  useEffect(() => {
-    if (threeDRef) {
-      threeDRef.current = {
-        createObject: (type, parameters, name) => {
-          const object = {
-            type,
-            parameters,
-            operations: config.defaultOperations(advancedMode),
-            viewOptions: {
-              name,
-              color:
-                config.colors[Math.floor(Math.random() * config.colors.length)]
-            }
-          };
-        },
-        exportToSTL: (name, separate) => {
-          const nameToPass = name === "" ? "scene" : name;
-          scene.exportToSTLAsync(nameToPass, separate);
-        }
-      };
-    }
-  }, [threeDRef]);
+  useEffect(
+    () => {
+      if (threeDRef) {
+        threeDRef.current = {
+          createObject: (type, parameters, name) => {
+            const object = {
+              type,
+              parameters,
+              operations: config.defaultOperations(advancedMode),
+              viewOptions: {
+                name,
+                color:
+                  config.colors[
+                    Math.floor(Math.random() * config.colors.length)
+                  ]
+              }
+            };
+          },
+          exportToSTL: (name, separate) => {
+            const nameToPass = name === "" ? "scene" : name;
+            scene.exportToSTLAsync(nameToPass, separate);
+          }
+        };
+      }
+    },
+    [threeDRef]
+  );
 
   const t = useTranslate();
 

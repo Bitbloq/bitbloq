@@ -107,14 +107,12 @@ const Container = styled.div<IContainerProps>`
   flex-direction: column;
   border-radius: 4px;
   border: 1px solid
-    ${props =>
-      props.isDragging || props.isOver ? colors.gray4 : colors.gray3};
+    ${props => (props.isDragging || props.isOver ? colors.gray4 : colors.gray3)};
   cursor: pointer;
   background-color: white;
   position: relative;
   overflow: hidden;
-  visibility: ${props =>
-    props.isDragging ? "hidden" : "visible"};
+  visibility: ${props => (props.isDragging ? "hidden" : "visible")};
 
   &:hover {
     border-color: ${colors.gray4};
@@ -202,4 +200,3 @@ const DocumentMenuOption = styled.div`
     border: none;
   }
 `;
-

@@ -1,5 +1,5 @@
 import React from "react";
-import uuid from 'uuid/v1';
+import uuid from "uuid/v1";
 
 const SvgSphere = props => {
   const gradientId = uuid();
@@ -28,4 +28,3 @@ const SvgSphere = props => {
 };
 
 export default SvgSphere;
-

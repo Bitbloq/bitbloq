@@ -52,27 +52,30 @@ const HorizontalBloqEditor: React.FunctionComponent<
   const [linesScrollLeft, setLinesScrollLeft] = useState(0);
   const linesRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    if (linesRef.current) {
-      let bloqIndex = -1;
-      if (selectedBloqIndex >= 0) {
-        bloqIndex = selectedBloqIndex;
-      }
-      if (selectedPlaceholder >= 0) {
-        bloqIndex = selectedPlaceholder;
-      }
+  useEffect(
+    () => {
+      if (linesRef.current) {
+        let bloqIndex = -1;
+        if (selectedBloqIndex >= 0) {
+          bloqIndex = selectedBloqIndex;
+        }
+        if (selectedPlaceholder >= 0) {
+          bloqIndex = selectedPlaceholder;
+        }
 
-      if (bloqIndex >= 0) {
-        const bloqPosition = 65 + bloqIndex * 65;
-        const width = linesRef.current.clientWidth;
-        if (bloqPosition - linesScrollLeft < 0) {
-          linesRef.current.scrollLeft = bloqPosition;
-        } else if (bloqPosition - linesScrollLeft > width - 160) {
-          linesRef.current.scrollLeft = bloqPosition - width + 160;
+        if (bloqIndex >= 0) {
+          const bloqPosition = 65 + bloqIndex * 65;
+          const width = linesRef.current.clientWidth;
+          if (bloqPosition - linesScrollLeft < 0) {
+            linesRef.current.scrollLeft = bloqPosition;
+          } else if (bloqPosition - linesScrollLeft > width - 160) {
+            linesRef.current.scrollLeft = bloqPosition - width + 160;
+          }
         }
       }
-    }
-  }, [linesScrollLeft, selectedBloqIndex, selectedPlaceholder]);
+    },
+    [linesScrollLeft, selectedBloqIndex, selectedPlaceholder]
+  );
 
   const [undoPast, setUndoPast] = useState<IBloq[][][]>([]);
   const [undoFuture, setUndoFuture] = useState<IBloq[][][]>([]);

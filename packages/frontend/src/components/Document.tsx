@@ -152,7 +152,9 @@ class Document extends React.Component<any, DocumentState> {
           <DocumentHeaderButton
             onClick={() =>
               window.open(
-                `/app/edit-document/${document.folder}/${document.type}/${document.id}`
+                `/app/edit-document/${document.folder}/${document.type}/${
+                  document.id
+                }`
               )
             }
           >
@@ -186,7 +188,9 @@ class Document extends React.Component<any, DocumentState> {
           <DocumentHeaderButton
             onClick={() =>
               window.open(
-                `/app/edit-document/${document.folder}/${document.type}/${document.id}`
+                `/app/edit-document/${document.folder}/${document.type}/${
+                  document.id
+                }`
               )
             }
           >

@@ -1,5 +1,5 @@
 import React from "react";
-import uuid from 'uuid/v1';
+import uuid from "uuid/v1";
 
 const SvgCylinder = props => {
   const gradientId = uuid();
@@ -27,4 +27,3 @@ const SvgCylinder = props => {
 };
 
 export default SvgCylinder;
-

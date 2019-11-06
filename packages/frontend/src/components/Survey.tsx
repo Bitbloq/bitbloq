@@ -1,11 +1,11 @@
-import * as React from 'react';
-import styled from '@emotion/styled';
-import {Option, Checkbox, Input, TextArea} from '@bitbloq/ui';
+import * as React from "react";
+import styled from "@emotion/styled";
+import { Option, Checkbox, Input, TextArea } from "@bitbloq/ui";
 
 export enum QuestionType {
-  SingleOption = 'singleOption',
-  MultipleOption = 'multipleOption',
-  Text = 'text',
+  SingleOption = "singleOption",
+  MultipleOption = "multipleOption",
+  Text = "text"
 }
 
 type SingleValue = any;
@@ -48,8 +48,8 @@ export interface SurveyProps {
 
 class Survey extends React.Component<SurveyProps> {
   renderSingleOption(question) {
-    const {values, onChange} = this.props;
-    const {id, title, options = []} = question;
+    const { values, onChange } = this.props;
+    const { id, title, options = [] } = question;
 
     const value = values[id] as SingleValue;
 
@@ -59,7 +59,8 @@ class Survey extends React.Component<SurveyProps> {
         {options.map(option => (
           <OptionWrap
             key={option.value}
-            onClick={() => onChange({...values, [id]: option.value})}>
+            onClick={() => onChange({ ...values, [id]: option.value })}
+          >
             <Option checked={option.value === value} />
             <span>{option.label}</span>
           </OptionWrap>
@@ -69,18 +70,18 @@ class Survey extends React.Component<SurveyProps> {
   }
 
   renderMultipleOption(question) {
-    const {values, onChange} = this.props;
+    const { values, onChange } = this.props;
     const {
       id,
       title,
       options = [],
       allowOther,
-      otherLabel = '',
-      otherPlaceholder = '',
+      otherLabel = "",
+      otherPlaceholder = ""
     } = question;
 
     const value = (values[id] || {}) as MultipleValue;
-    const {selected = [], hasOther, otherValue = ''} = value;
+    const { selected = [], hasOther, otherValue = "" } = value;
 
     return (
       <Question key={id}>
@@ -97,16 +98,17 @@ class Survey extends React.Component<SurveyProps> {
                     ...values,
                     [id]: {
                       ...value,
-                      selected: selected.filter(v => v !== option.value),
-                    },
+                      selected: selected.filter(v => v !== option.value)
+                    }
                   });
                 } else {
                   onChange({
                     ...values,
-                    [id]: {...value, selected: [...selected, option.value]},
+                    [id]: { ...value, selected: [...selected, option.value] }
                   });
                 }
-              }}>
+              }}
+            >
               <Checkbox checked={isSelected} />
               <span>{option.label}</span>
             </OptionWrap>
@@ -118,9 +120,10 @@ class Survey extends React.Component<SurveyProps> {
               onClick={() =>
                 onChange({
                   ...values,
-                  [id]: {...value, hasOther: !hasOther, otherValue: ''},
+                  [id]: { ...value, hasOther: !hasOther, otherValue: "" }
                 })
-              }>
+              }
+            >
               <Checkbox checked={hasOther} />
               <span>{otherLabel}</span>
             </OptionWrap>
@@ -130,7 +133,7 @@ class Survey extends React.Component<SurveyProps> {
               onChange={e =>
                 onChange({
                   ...values,
-                  [id]: {...value, otherValue: e.target.value},
+                  [id]: { ...value, otherValue: e.target.value }
                 })
               }
               disabled={!hasOther}
@@ -142,8 +145,8 @@ class Survey extends React.Component<SurveyProps> {
   }
 
   renderText(question) {
-    const {values, onChange} = this.props;
-    const {id, title, placeholder} = question;
+    const { values, onChange } = this.props;
+    const { id, title, placeholder } = question;
 
     const value = values[id] as SingleValue;
 
@@ -152,7 +155,7 @@ class Survey extends React.Component<SurveyProps> {
         <Title>{question.title}</Title>
         <TextArea
           value={value}
-          onChange={e => onChange({...values, [id]: e.target.value})}
+          onChange={e => onChange({ ...values, [id]: e.target.value })}
           rows={3}
           placeholder={placeholder}
         />
@@ -161,7 +164,7 @@ class Survey extends React.Component<SurveyProps> {
   }
 
   render() {
-    const {questions} = this.props;
+    const { questions } = this.props;
 
     return questions.map(question => {
       switch (question.type) {

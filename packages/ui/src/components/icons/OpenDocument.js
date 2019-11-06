@@ -11,4 +11,3 @@ const SvgOpenDocument = props => (
 );
 
 export default SvgOpenDocument;
-

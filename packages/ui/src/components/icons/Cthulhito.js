@@ -160,4 +160,3 @@ const SvgPulpo2 = props => (
 );
 
 export default SvgPulpo2;
-

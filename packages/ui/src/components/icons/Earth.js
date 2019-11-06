@@ -11,4 +11,3 @@ const SvgEarth = props => (
 );
 
 export default SvgEarth;
-

@@ -64,11 +64,14 @@ const PropertiesPanel: FC<IPropertiesPanelProps> = ({
   const { color } = object.viewOptions;
 
   const nameInputRef = useRef<HTMLInputElement | null>(null);
-  useEffect(() => {
-    if (nameInputRef.current) {
-      nameInputRef.current.focus();
-    }
-  }, [editingName]);
+  useEffect(
+    () => {
+      if (nameInputRef.current) {
+        nameInputRef.current.focus();
+      }
+    },
+    [editingName]
+  );
 
   const typeConfig = config.objectTypes.find(s => s.name === object.type)!;
   const {
@@ -108,9 +111,12 @@ const PropertiesPanel: FC<IPropertiesPanelProps> = ({
   };
 
   const objectRef = useRef(object);
-  useEffect(() => {
-    objectRef.current = object;
-  }, [object]);
+  useEffect(
+    () => {
+      objectRef.current = object;
+    },
+    [object]
+  );
 
   const onObjectParameterChange = useCallback(
     (parameter: IObjectParameter, value: any) => {

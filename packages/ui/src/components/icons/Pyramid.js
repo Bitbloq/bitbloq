@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 
 const SvgPyramid = props => (
   <svg width="1em" height="1em" viewBox="0 0 24 26" {...props}>

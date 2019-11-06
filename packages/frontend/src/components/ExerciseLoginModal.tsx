@@ -34,10 +34,13 @@ const ExerciseLoginModal: FC<ExerciseLoginModalProps> = ({
 
   const t = useTranslate();
 
-  useEffect(() => {
-    setTeamNameError("");
-    setPasswordError("");
-  }, [step]);
+  useEffect(
+    () => {
+      setTeamNameError("");
+      setPasswordError("");
+    },
+    [step]
+  );
 
   const gotoStep = (step: Steps) => {
     setTeamName("");

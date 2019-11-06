@@ -17,7 +17,7 @@ const DocumentInfo: FC<DocumentInfoProps> = ({ document, onGotoDocument }) => {
       <Left>
         <LeftContent>
           <h2>{title}</h2>
-          <Image src={image.image ? image.image : image as string} />
+          <Image src={image.image ? image.image : (image as string)} />
         </LeftContent>
       </Left>
       <Right>

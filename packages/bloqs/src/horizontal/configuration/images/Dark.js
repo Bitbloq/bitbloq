@@ -121,4 +121,3 @@ const SvgDark = props => (
 );
 
 export default SvgDark;
-

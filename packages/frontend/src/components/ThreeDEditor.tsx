@@ -82,7 +82,7 @@ class ThreeDEditor extends React.Component<EditorProps> {
 
   readonly state = {
     showExportModal: false,
-    showSTLError: "",
+    showSTLError: ""
   };
 
   onMenuOptionClick = option => {

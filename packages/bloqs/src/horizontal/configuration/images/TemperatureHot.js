@@ -97,4 +97,3 @@ const SvgTemperatureHot = props => (
 );
 
 export default SvgTemperatureHot;
-

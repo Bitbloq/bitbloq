@@ -1,5 +1,5 @@
 import React from "react";
-import uuid from 'uuid/v1';
+import uuid from "uuid/v1";
 
 const SvgCube = props => {
   const gradientId = uuid();
@@ -19,7 +19,10 @@ const SvgCube = props => {
       </defs>
       <g fill="none">
         <path fill="#4DC3FF" d="M12 10.261v15.341L.068 20.49V5.148z" />
-        <path fill={`url(#${gradientId})`} d="M23.932 5.148v15.34L12 25.603v-15.34z" />
+        <path
+          fill={`url(#${gradientId})`}
+          d="M23.932 5.148v15.34L12 25.603v-15.34z"
+        />
         <path fill="#4DE1FF" d="M23.932 5.148L12 10.26.068 5.148 12 .034z" />
       </g>
     </svg>
@@ -27,4 +30,3 @@ const SvgCube = props => {
 };
 
 export default SvgCube;
-

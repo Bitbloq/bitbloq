@@ -5,7 +5,11 @@ import Router from "next/router";
 import withApollo from "../apollo/withApollo";
 import { useQuery, useMutation } from "@apollo/react-hooks";
 import { Input, Button } from "@bitbloq/ui";
-import { ME_QUERY, CHECK_RESET_PASSWORD_TOKEN_MUTATION, UPDATE_PASSWORD_MUTATION } from "../apollo/queries";
+import {
+  ME_QUERY,
+  CHECK_RESET_PASSWORD_TOKEN_MUTATION,
+  UPDATE_PASSWORD_MUTATION
+} from "../apollo/queries";
 import AccessLayout, { AccessLayoutSize } from "../components/AccessLayout";
 import ModalLayout from "../components/ModalLayout";
 
@@ -33,7 +37,7 @@ const ForgotPasswordPage: FC<IForgotPasswordPageProps> = ({ location }) => {
 
   const checkTokenValidity = async () => {
     try {
-      await checkToken({ variables: { token }});
+      await checkToken({ variables: { token } });
     } catch (e) {
       setInvalidToken(true);
     }
@@ -42,7 +46,6 @@ const ForgotPasswordPage: FC<IForgotPasswordPageProps> = ({ location }) => {
   useEffect(() => {
     checkTokenValidity();
   }, []);
-
 
   const onSaveClick = async () => {
     if (!password) {
@@ -59,7 +62,9 @@ const ForgotPasswordPage: FC<IForgotPasswordPageProps> = ({ location }) => {
     try {
       setPasswordError("");
       setRepeatError("");
-      const result = await updatePassword({ variables: { token, newPassword: password } });
+      const result = await updatePassword({
+        variables: { token, newPassword: password }
+      });
       setSuccess(true);
     } catch (e) {}
   };
@@ -100,13 +105,8 @@ const ForgotPasswordPage: FC<IForgotPasswordPageProps> = ({ location }) => {
   }
 
   return (
-    <AccessLayout
-      panelTitle="Nueva contraseña"
-      size={AccessLayoutSize.MEDIUM}
-    >
-      <Text>
-        Ahora ya puedes escribir una nueva contraseña
-      </Text>
+    <AccessLayout panelTitle="Nueva contraseña" size={AccessLayoutSize.MEDIUM}>
+      <Text>Ahora ya puedes escribir una nueva contraseña</Text>
       <FormGroup>
         <label>Nueva contraseña</label>
         <Input
@@ -118,9 +118,7 @@ const ForgotPasswordPage: FC<IForgotPasswordPageProps> = ({ location }) => {
             setPassword(e.target.value)
           }
         />
-        {passwordError && (
-          <ErrorMessage>{passwordError}</ErrorMessage>
-        )}
+        {passwordError && <ErrorMessage>{passwordError}</ErrorMessage>}
       </FormGroup>
       <FormGroup>
         <label>Repetir nueva contraseña</label>
@@ -133,9 +131,7 @@ const ForgotPasswordPage: FC<IForgotPasswordPageProps> = ({ location }) => {
             setRepeat(e.target.value)
           }
         />
-        {repeatError && (
-          <ErrorMessage>{repeatError}</ErrorMessage>
-        )}
+        {repeatError && <ErrorMessage>{repeatError}</ErrorMessage>}
       </FormGroup>
       <Buttons>
         <Button secondary onClick={() => Router.push("/login")}>

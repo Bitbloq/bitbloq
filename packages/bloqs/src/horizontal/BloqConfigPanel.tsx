@@ -56,9 +56,12 @@ const BloqConfigPanel: FC<IBloqConfigPanelProps> = ({
 }) => {
   const [selectedTab, setSelectedTab] = useState(BloqCategory.Action);
 
-  useEffect(() => {
-    setSelectedTab(BloqCategory.Action);
-  }, [isOpen, selectedPlaceholder]);
+  useEffect(
+    () => {
+      setSelectedTab(BloqCategory.Action);
+    },
+    [isOpen, selectedPlaceholder]
+  );
 
   const addEvent = selectedPlaceholder === 0;
   const addAction = selectedPlaceholder > 0;
