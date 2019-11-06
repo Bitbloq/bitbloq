@@ -17,13 +17,15 @@ const JuniorEditor = dynamic(() => import("./components/JuniorEditor"), {
   ssr: false
 });
 
+const ENABLED_TOOLS = process.env.ENABLED_TOOLS || [];
+
 export const documentTypes = {
   junior: {
     label: "Robótica Junior",
     shortLabel: "Junior",
     color: colors.brandOrange,
     buttonType: "orange",
-    supported: process.env.ENABLED_TOOLS.includes("junior"),
+    supported: ENABLED_TOOLS.includes("junior"),
     icon: "logo-junior",
     level: "Principiante",
     landingText: `Da tus primeros pasos en la robótica con una programación por bloques sencilla e intuitiva.`,
@@ -33,7 +35,7 @@ export const documentTypes = {
     label: "Robótica",
     shortLabel: "Robótica",
     color: colors.green,
-    supported: process.env.ENABLED_TOOLS.includes("bloqs"),
+    supported: ENABLED_TOOLS.includes("bloqs"),
     icon: "logo-bloqs",
     level: "Medio",
     landingText:
@@ -48,14 +50,14 @@ export const documentTypes = {
     level: "Avanzado",
     landingText:
       "Da el salto al código con Arduino®. Crea tus primeros programas y da vida a tus robots.",
-    supported: process.env.ENABLED_TOOLS.includes("code")
+    supported: ENABLED_TOOLS.includes("code")
   },
   "3d": {
     label: "Diseño 3D",
     shortLabel: "Diseño 3D",
     color: colors.brandBlue,
     buttonType: "blue",
-    supported: process.env.ENABLED_TOOLS.includes("3d"),
+    supported: ENABLED_TOOLS.includes("3d"),
     icon: "logo-3d",
     level: "Medio",
     landingText:
@@ -71,7 +73,7 @@ export const documentTypes = {
     level: "Avanzado",
     landingText:
       "Empieza a diseñar y programar tus propias apps para Android®, iOS® o PC.",
-    supported: process.env.ENABLED_TOOLS.includes("apps")
+    supported: ENABLED_TOOLS.includes("apps")
   }
 };
 
