@@ -72,6 +72,7 @@ const Documents: FC<{ id?: string }> = ({ id }) => {
   const [folderTitleModal, setFolderTitleModal] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(8);
+  const [pagesNumber, setPagesNumber] = useState(1);
   const [currentLocation] = useState({
     id: id ? id : userData ? userData.rootFolder : null,
     name: "root"
