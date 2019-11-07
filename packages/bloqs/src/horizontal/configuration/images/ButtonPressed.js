@@ -107,4 +107,3 @@ const SvgButtonPressed = props => (
 );
 
 export default SvgButtonPressed;
-

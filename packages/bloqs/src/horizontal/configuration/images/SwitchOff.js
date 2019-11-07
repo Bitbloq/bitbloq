@@ -93,4 +93,3 @@ const SvgRectangle = props => (
 );
 
 export default SvgRectangle;
-

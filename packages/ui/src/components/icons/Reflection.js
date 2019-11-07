@@ -11,4 +11,3 @@ const SvgReflection = props => (
 );
 
 export default SvgReflection;
-

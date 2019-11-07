@@ -11,4 +11,3 @@ const SvgNewDocument = props => (
 );
 
 export default SvgNewDocument;
-

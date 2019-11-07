@@ -11,4 +11,3 @@ const SvgRepeat = props => (
 );
 
 export default SvgRepeat;
-

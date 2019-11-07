@@ -50,7 +50,7 @@ const ExerciseLoginModal: FC<ExerciseLoginModalProps> = ({
       setTeamNameError(t("submission-error-not-name"));
     } else {
       try {
-        const { data } = await start({
+        const result = await start({
           variables: {
             studentNick: teamName,
             exerciseCode: code,
@@ -67,9 +67,11 @@ const ExerciseLoginModal: FC<ExerciseLoginModalProps> = ({
             setTeamNameError(e.message);
           }
         });
-        const { token } = data.startSubmission;
-        setToken(token, "exercise-team");
-        onSuccess(teamName);
+        if (result && result.data) {
+          const { token } = result.data.startSubmission;
+          setToken(token, "exercise-team");
+          onSuccess(teamName);
+        }
       } catch (e) {}
     }
   };
@@ -148,7 +150,7 @@ const ExerciseLoginModal: FC<ExerciseLoginModalProps> = ({
               <label>Nombre del equipo</label>
               <Input
                 value={teamName}
-                error={teamNameError}
+                error={!!teamNameError}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                   setTeamName(e.target.value)
                 }
@@ -159,7 +161,7 @@ const ExerciseLoginModal: FC<ExerciseLoginModalProps> = ({
               <label>Contraseña {step === Steps.Start && "(opcional)"}</label>
               <Input
                 value={password}
-                error={passwordError}
+                error={!!passwordError}
                 type="password"
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                   setPassword(e.target.value)

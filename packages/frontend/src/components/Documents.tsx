@@ -13,7 +13,7 @@ import {
   Input,
   HorizontalRule
 } from "@bitbloq/ui";
-import { navigate } from "gatsby";
+import Router from "next/router";
 import { Subscription } from "react-apollo";
 import debounce from "lodash/debounce";
 import { ApolloError } from "apollo-client";
@@ -28,12 +28,12 @@ import useUserData from "../lib/useUserData";
 import AppFooter from "./Footer";
 import AppHeader from "./AppHeader";
 import Breadcrumbs from "./Breadcrumbs";
-import DocumentListComp from "./DocumentsList";
+import DocumentList from "./DocumentsList";
 import EditTitleModal from "./EditTitleModal";
 import GraphQLErrorMessage from "./GraphQLErrorMessage";
+import Layout from "./Layout";
 import NewDocumentDropDown from "./NewDocumentDropDown";
 import NewExerciseButton from "./NewExerciseButton";
-import Paginator from "./Paginator";
 import UserSession from "./UserSession";
 
 enum OrderType {
@@ -120,6 +120,7 @@ const Documents: FC<{ id?: string }> = ({ id }) => {
     if (!loading && !errorQuery) {
       setError(null);
       setDocumentsData(resultData);
+      setPagesNumber(resultData.documentsAndFolders.pagesNumber);
     }
     if (errorQuery) {
       setError(errorQuery);
@@ -130,15 +131,21 @@ const Documents: FC<{ id?: string }> = ({ id }) => {
   const [exerciseError, setExerciseError] = useState(false);
 
   const onFolderClick = async ({ id, title }) => {
-    window.open(`/app/folder/${id}`, "_self");
+    Router.push(`/app/folder/${id}`);
   };
+
+  useEffect(() => {
+    if (currentPage > pagesNumber) {
+      setCurrentPage(pagesNumber);
+    }
+  }, [pagesNumber]);
 
   const onDocumentClick = ({ id, type, title }) => {
     setBreadcrumbsLinks([
       ...breadcrumbLinks,
       { route: id, text: title, type: "document" }
     ]);
-    navigate(`/app/document/${id}`);
+    Router.push(`/app/document/${id}`);
   };
 
   const onCreateFolder = async folderName => {
@@ -154,11 +161,11 @@ const Documents: FC<{ id?: string }> = ({ id }) => {
   };
 
   const onNewDocument = type => {
-    window.open(`/app/document/${currentLocation.id}/${type}/new`);
+    window.open(`/app/edit-document/${currentLocation.id}/${type}/new`);
   };
 
   const onDocumentCreated = ({ createDocument: { id, type } }) => {
-    navigate(`/app/document/${currentLocation.id}/${type}/${id}`);
+    Router.push(`/app/edit-document/${currentLocation.id}/${type}/${id}`);
   };
 
   const onOrderChange = order => {
@@ -222,16 +229,21 @@ const Documents: FC<{ id?: string }> = ({ id }) => {
 
   if (error) {
     return <GraphQLErrorMessage apolloError={error} />;
-  }
-  if (!documentsData || !documentsData.documentsAndFolders)
+  } else if (loading || !documentsData.documentsAndFolders) {
     return (
       <Container>
-        <Loading />
+        <AppHeader>
+          <UserSession />
+        </AppHeader>
+        <Content>
+          <Loading />
+        </Content>
+        <AppFooter />
       </Container>
     );
+  }
 
   const {
-    pagesNumber,
     result: docsAndFols,
     parentsPath,
     nFolders
@@ -250,7 +262,7 @@ const Documents: FC<{ id?: string }> = ({ id }) => {
       </AppHeader>
       <Content>
         <Header>
-          {currentLocation.id === userData.rootFolder ? (
+          {currentLocation.id === (userData && userData.rootFolder) ? (
             <h1>Mis documentos</h1>
           ) : (
             <Breadcrumbs links={breadParents} />
@@ -311,7 +323,7 @@ const Documents: FC<{ id?: string }> = ({ id }) => {
         </DocumentListHeader>
         {docsAndFols.length > 0 ? (
           <DndProvider backend={HTML5Backend}>
-            <DocumentListComp
+            <DocumentList
               currentPage={currentPage}
               parentsPath={parentsPath}
               pagesNumber={pagesNumber}
@@ -320,8 +332,6 @@ const Documents: FC<{ id?: string }> = ({ id }) => {
               currentLocation={currentLocation}
               onFolderClick={onFolderClick}
               onDocumentClick={onDocumentClick}
-              order={order}
-              searchTitle={searchText}
               selectPage={(page: number) => setCurrentPage(page)}
               setItemsPerPage={setItemsPerPage}
               nFolders={nFolders}
@@ -376,23 +386,15 @@ export default DocumentsWithDelete;
 /* styled components */
 
 const Container = styled.div`
-  position: absolute;
-  height: 100%;
-  width: 100%;
   background-color: ${colors.gray1};
+  height: 100vh;
   display: flex;
   flex-direction: column;
 `;
 
-const Content = styled.div`
-  display: flex;
+const Content = styled(Layout)`
   flex: 1;
-  flex-flow: column nowrap;
-  padding: 0px 50px;
-
-  & > div {
-    flex-shrink: 0;
-  }
+  width: 100%;
 `;
 
 const Header = styled.div`
@@ -413,7 +415,7 @@ const Header = styled.div`
 `;
 
 const Loading = styled(Spinner)`
-  flex: 1;
+  height: 100%;
 `;
 
 const Rule = styled(HorizontalRule)`
@@ -421,9 +423,9 @@ const Rule = styled(HorizontalRule)`
 `;
 
 const DocumentListHeader = styled.div`
-  display: flex;
-  height: 115px;
   align-items: center;
+  display: flex;
+  margin: 20px 0 40px;
 `;
 
 const HeaderButtons = styled.div`
@@ -436,19 +438,19 @@ const ViewOptions = styled.div`
   margin-right: 10px;
 `;
 
-const OrderSelect: Select = styled(Select)`
+const OrderSelect = styled(Select)`
   width: 200px;
 `;
 
-const SearchInput: Input = styled(Input)`
+const SearchInput = styled(Input)`
   width: 210px;
   flex: inherit;
 `;
 
-interface NewDocumentButtonProps {
+interface INewDocumentButtonProps {
   isOpen: boolean;
 }
-const NewDocumentButton = styled(Button)<NewDocumentButtonProps>`
+const NewDocumentButton = styled(Button)<INewDocumentButtonProps>`
   border-radius: 4px;
   font-size: 14px;
   padding: 0px 20px;
@@ -500,8 +502,4 @@ const NewFolderButton = styled(Button)`
     height: 20px;
     margin-right: 6px;
   }
-`;
-
-const DocumentsPaginator = styled(Paginator)`
-  margin-bottom: 60px;
 `;

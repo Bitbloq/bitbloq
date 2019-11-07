@@ -1,8 +1,6 @@
 import React, { FC } from "react";
 import styled from "@emotion/styled";
-import { Global, css } from "@emotion/core";
-import { baseStyles, colors, HorizontalRule } from "@bitbloq/ui";
-import SEO from "../components/SEO";
+import { colors, HorizontalRule } from "@bitbloq/ui";
 import logoBetaImage from "../images/logo-beta.svg";
 
 export enum AccessLayoutSize {
@@ -11,33 +9,27 @@ export enum AccessLayoutSize {
   BIG
 }
 
-export interface AccessLayoutProps {
-  title: string;
+export interface IAccessLayoutProps {
   panelTitle: string;
   size?: AccessLayoutSize;
 }
 
-const AccessLayout: FC<AccessLayoutProps> = ({
-  title,
+const AccessLayout: FC<IAccessLayoutProps> = ({
   panelTitle,
   size,
   children
 }) => {
   return (
-    <>
-      <SEO title={title} keywords={[`bitbloq login`]} />
-      <Global styles={baseStyles} />
-      <Wrap>
-        <Container size={size}>
-          <Logo src={logoBetaImage} alt="Bitbloq Beta" />
-          <MainPanel>
-            <Title>{panelTitle}</Title>
-            <HorizontalRule small />
-            <PanelContent>{children}</PanelContent>
-          </MainPanel>
-        </Container>
-      </Wrap>
-    </>
+    <Wrap>
+      <Container size={size}>
+        <Logo src={logoBetaImage} alt="Bitbloq Beta" />
+        <MainPanel>
+          <Title>{panelTitle}</Title>
+          <HorizontalRule small={true} />
+          <PanelContent>{children}</PanelContent>
+        </MainPanel>
+      </Container>
+    </Wrap>
   );
 };
 
@@ -60,10 +52,10 @@ const Wrap = styled.div`
   background-color: ${colors.gray1};
 `;
 
-interface ContainerProps {
+interface IContainerProps {
   size?: AccessLayoutSize;
 }
-const Container = styled.div<ContainerProps>`
+const Container = styled.div<IContainerProps>`
   max-width: ${props => {
     switch (props.size) {
       case AccessLayoutSize.SMALL:

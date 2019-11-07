@@ -7,7 +7,7 @@ import colors from "../colors";
 export interface ModalProps {
   isOpen: boolean;
   title?: string;
-  showHeader: boolean;
+  showHeader?: boolean;
   onClose?: () => void;
   transparentOverlay?: boolean;
   className?: string;

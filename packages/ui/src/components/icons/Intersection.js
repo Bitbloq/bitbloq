@@ -11,4 +11,3 @@ const SvgIntersection = props => (
 );
 
 export default SvgIntersection;
-

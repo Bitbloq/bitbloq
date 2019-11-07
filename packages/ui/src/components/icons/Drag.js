@@ -11,4 +11,3 @@ const SvgDrag = props => (
 );
 
 export default SvgDrag;
-

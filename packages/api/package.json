@@ -58,7 +58,7 @@
     "koa": "^2.7.0",
     "koa-jwt": "^3.5.1",
     "lowdb": "^1.0.0",
-    "mongoose": "^5.4.19",
+    "mongoose": "^5.7.5",
     "mongoose-timestamp": "^0.6.0",
     "nodemailer": "^5.1.1",
     "path": "^0.12.7",
@@ -67,7 +67,6 @@
     "reflect-metadata": "^0.1.13",
     "shortid": "^2.2.14",
     "ts-node": "^7.0.1",
-    "tslint": "^5.14.0",
     "typescript": "^3.3.4000",
     "winston": "^3.2.1",
     "winston-elasticsearch": "^0.7.9"
@@ -79,9 +78,7 @@
     "mjml": "^4.4.1",
     "mjml-with-images-loader": "^2.0.0",
     "nodemon": "^1.18.10",
-    "prettier": "1.15.3",
-    "ts-jest": "^23.10.5",
-    "tslint-config-prettier": "^1.18.0"
+    "ts-jest": "^23.10.5"
   },
   "scripts": {
     "build": "tsc",
@@ -90,8 +87,7 @@
     "dev": "./node_modules/nodemon/bin/nodemon.js",
     "dev-inspect": "nodemon --exec npm run start-inspect",
     "prod": "npm run build && npm run start",
-    "test": "jest",
-    "format": "prettier --write \"src/**/*.ts\" \"src/*.ts\""
+    "test": "jest"
   },
   "keywords": [],
   "author": "",

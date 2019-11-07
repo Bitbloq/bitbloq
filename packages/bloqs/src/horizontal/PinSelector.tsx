@@ -29,7 +29,9 @@ const PinSelector: FC<IPinSelectorProps> = ({
 }) => {
   const t = useTranslate();
   const componentInstance = componentInstances.find(c => c.name === value)!;
-  const component = componentInstance && components.find(c => c.name === componentInstance.component);
+  const component =
+    componentInstance &&
+    components.find(c => c.name === componentInstance.component);
 
   if (componentInstance && componentInstance.integrated) {
     return null;

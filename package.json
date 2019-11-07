@@ -1,24 +1,19 @@
 {
-  "name": "root",
-  "private": false,
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
   "scripts": {
-    "test": "lerna exec -- npm run test",
-    "coveralls": "lerna exec -- npm run coveralls",
-    "tslint:prod": "lerna run tslint:prod",
-    "tslint:dev": "lerna run tslint:dev",
-    "prettier": "lerna run prettier",
-    "prettier:ts": "lerna run prettier:ts"
+    "prettier": "prettier --write \"packages/*/src/**/*.{ts,js,tsx,jsx,json,md,scss,yml}\"",
+    "tslint:dev": "tslint -c ./tslint-dev.json \"packages/*/src/**/*.ts\"",
+    "tslint:prod": "tslint -c ./tslint-prod.json \"packages/*/src/**/*.ts\"",
+    "tslint:sta": "tslint -c ./tslint-sta.json \"packages/*/src/**/*.ts\"",
+    "tslint:qa": "tslint -c ./tslint-sta.json \"packages/*/src/**/*.ts\""
   },
   "devDependencies": {
-    "@babel/core": "^7.5.5",
-    "@babel/plugin-proposal-class-properties": "^7.5.5",
-    "@babel/plugin-syntax-decorators": "^7.2.0",
-    "@babel/preset-react": "^7.0.0",
-    "babel-plugin-emotion": "^10.0.16"
-  },
-  "dependencies": {
-    "@babel/preset-env": "^7.5.5",
-    "@babel/preset-typescript": "^7.3.3",
-    "deepmerge": "^4.0.0"
+    "prettier": "^1.18.2",
+    "tslint": "^5.20.1",
+    "tslint-config-prettier": "^1.18.0",
+    "typescript": "^3.7.2"
   }
 }

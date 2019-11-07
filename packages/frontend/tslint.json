@@ -21,12 +21,15 @@
     "no-debugger": false,
     "ter-arrow-parens": false,
     "import-name": false,
-    "variable-name": [true, "check-format", "allow-leading-underscore"],
+    "variable-name": [true, "check-format", "allow-pascal-case"],
     "prefer-array-literal": [true, { "allow-type-parameters": true }],
-    "ordered-imports": [false]
+    "ordered-imports": [false],
+    "no-submodule-imports": false,
+    "jsx-no-lambda": false,
+    "jsx-boolean-value": false,
+    "no-empty": [true, "allow-empty-catch"]
   },
   "jsRules": {
-    //Disable for javascript
     "no-console": false,
     "object-literal-sort-keys": false,
     "no-debugger": false

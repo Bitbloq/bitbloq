@@ -1,5 +1,5 @@
 import React from "react";
-import uuid from 'uuid/v1';
+import uuid from "uuid/v1";
 
 const SvgPrism = props => {
   const gradientId = uuid();
@@ -28,4 +28,3 @@ const SvgPrism = props => {
 };
 
 export default SvgPrism;
-

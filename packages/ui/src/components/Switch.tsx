@@ -67,4 +67,3 @@ const Toggle = styled.div<ToggleProps>`
       transform: translate(24px);
     `};
 `;
-

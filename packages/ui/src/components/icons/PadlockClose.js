@@ -10,4 +10,3 @@ const SvgPadlockClose = props => (
 );
 
 export default SvgPadlockClose;
-

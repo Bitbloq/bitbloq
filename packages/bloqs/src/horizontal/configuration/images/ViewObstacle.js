@@ -182,7 +182,7 @@ const SvgObstacle = ({ closed, ...props }) => (
         xlinkHref="#obstacle_svg__a"
       />
     </g>
-    {closed &&
+    {closed && (
       <g fill="none" fillRule="evenodd" transform="translate(-1093 -2347)">
         <path
           fill="#E6C9C0"
@@ -213,7 +213,7 @@ const SvgObstacle = ({ closed, ...props }) => (
           fill="#DF0000"
         />
       </g>
-    }
+    )}
   </svg>
 );
 

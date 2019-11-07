@@ -11,4 +11,3 @@ const SvgLogoCode = props => (
 );
 
 export default SvgLogoCode;
-

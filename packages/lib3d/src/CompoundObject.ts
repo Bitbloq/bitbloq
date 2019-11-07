@@ -21,7 +21,7 @@ import {
   ICompoundObjectJSON
 } from "./Interfaces";
 import * as THREE from "three";
-import Worker from "./compound.worker";
+import Worker from "worker-loader?name=static/[hash].worker.js!./compound.worker";
 
 export type ChildrenArray = ObjectsCommon[];
 

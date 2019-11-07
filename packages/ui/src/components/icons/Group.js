@@ -11,4 +11,3 @@ const SvgGroup = props => (
 );
 
 export default SvgGroup;
-

@@ -2,7 +2,7 @@ import React, { FC } from "react";
 import styled from "@emotion/styled";
 import { Input } from "@bitbloq/ui";
 
-interface FormProps {
+interface IFormProps {
   className?: string;
   email: string;
   logingError: boolean;
@@ -11,7 +11,7 @@ interface FormProps {
   setPassword(password: string): void;
 }
 
-const LoginForm: FC<FormProps> = ({
+const LoginForm: FC<IFormProps> = ({
   className,
   email,
   logingError,

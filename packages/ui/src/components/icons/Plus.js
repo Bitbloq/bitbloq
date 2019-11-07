@@ -11,4 +11,3 @@ const SvgPlus = props => (
 );
 
 export default SvgPlus;
-

@@ -1,29 +1,29 @@
 import React, { FC, useLayoutEffect, useRef, useState } from "react";
-import { useMutation } from "@apollo/react-hooks";
+import { useMutation, useLazyQuery } from "@apollo/react-hooks";
 import styled from "@emotion/styled";
-import { Icon, colors, DialogModal, DropDown } from "@bitbloq/ui";
+import { DialogModal, DropDown } from "@bitbloq/ui";
 import { useDrop } from "react-dnd";
-
-import DocumentCard from "./DocumentCard";
-import EditTitleModal from "./EditTitleModal";
-import DocumentCardMenu from "./DocumentCardMenu";
-
 import { css } from "@emotion/core";
-
 import {
   UPDATE_DOCUMENT_MUTATION,
   DELETE_DOCUMENT_MUTATION,
   UPDATE_FOLDER_MUTATION,
   DELETE_FOLDER_MUTATION,
-  CREATE_DOCUMENT_MUTATION
+  CREATE_DOCUMENT_MUTATION,
+  HAS_EXERCISES_QUERY
 } from "../apollo/queries";
+import DocumentCard from "./DocumentCard";
+import DocumentCardMenu from "./DocumentCardMenu";
+import EditTitleModal from "./EditTitleModal";
 import FolderSelectorMenu from "./FolderSelectorMenu";
+import MenuButton from "./MenuButton";
 import Paginator from "./Paginator";
 
 interface Folder {
   name: string;
   id: string;
 }
+
 export interface DocumentListProps {
   currentPage: number;
   docsAndFols?: any;
@@ -54,12 +54,14 @@ const DocumentListComp: FC<DocumentListProps> = ({
   nFolders
 }) => {
   const [deleteDoc, setDeleteDoc] = useState({
-    id: null,
-    hasChildren: null
+    id: null
   });
   const [deleteFol, setDeleteFol] = useState({
+    id: null
+  });
+  const [selectedToDel, setSelectedToDel] = useState({
     id: null,
-    hasChildren: null
+    type: null
   });
   const [editDocTitleModal, setEditDocTitleModal] = useState({
     id: null,
@@ -87,7 +89,7 @@ const DocumentListComp: FC<DocumentListProps> = ({
   const [deleteDocument] = useMutation(DELETE_DOCUMENT_MUTATION);
   const [updateFolder] = useMutation(UPDATE_FOLDER_MUTATION);
   const [deleteFolder] = useMutation(DELETE_FOLDER_MUTATION);
-
+  
   const checkItemsPerPage = () => {
     const positionInit = gridRef.current ? gridRef.current.offsetTop : 0;
     const positionLimit =
@@ -115,6 +117,16 @@ const DocumentListComp: FC<DocumentListProps> = ({
   useLayoutEffect(() => {
     checkItemsPerPage();
     window.addEventListener("resize", checkItemsPerPage);
+  });
+
+  const [
+    hasExercises,
+    { data: hasExercisesRes, error: errorHasEx, loading: loadingHasEx }
+  ] = useLazyQuery(HAS_EXERCISES_QUERY, {
+    variables: {
+      id: selectedToDel.id,
+      type: selectedToDel.type
+    }
   });
 
   const [, drop] = useDrop({
@@ -154,16 +166,24 @@ const DocumentListComp: FC<DocumentListProps> = ({
       id: null,
       parent: null
     });
-    setDeleteDoc({ id: document.id, hasChildren: document.hasChildren });
+    setSelectedToDel({ id: document.id, type: document.type });
+    setDeleteDoc({
+      id: document.id
+    });
+    hasExercises();
   };
 
   const confirmDeleteDoc = () => {
-    if (deleteDoc.hasChildren) {
-      setDocWithEx(true);
-      return;
-    } else {
-      onDeleteDocument();
-      return;
+    if (loadingHasEx || !hasExercisesRes) {
+    }
+    if (!errorHasEx && hasExercisesRes !== undefined) {
+      if (hasExercisesRes && hasExercisesRes.hasExercises) {
+        setDocWithEx(true);
+        return;
+      } else {
+        onDeleteDocument();
+        return;
+      }
     }
   };
 
@@ -172,7 +192,7 @@ const DocumentListComp: FC<DocumentListProps> = ({
       variables: { id: deleteDoc.id }
     });
     refetchDocsFols();
-    setDeleteDoc({ id: null, hasChildren: null });
+    setDeleteDoc({ id: null });
     setDocWithEx(false);
   };
 
@@ -191,16 +211,22 @@ const DocumentListComp: FC<DocumentListProps> = ({
       id: null,
       parent: null
     });
-    setDeleteFol({ id: folder.id, hasChildren: folder.hasChildren });
+    setSelectedToDel({ id: folder.id, type: folder.type });
+    setDeleteFol({ id: folder.id });
+    hasExercises();
   };
 
-  const confirmDeleteFol = () => {
-    if (deleteFol.hasChildren) {
-      setFolWithChildren(true);
-      return;
-    } else {
-      onDeleteFolder();
-      return;
+  const confirmDeleteFol = async () => {
+    if (loadingHasEx || !hasExercisesRes) {
+    }
+    if (!errorHasEx && hasExercisesRes !== undefined) {
+      if (hasExercisesRes && hasExercisesRes.hasExercises) {
+        setFolWithChildren(true);
+        return;
+      } else {
+        onDeleteFolder();
+        return;
+      }
     }
   };
 
@@ -210,7 +236,7 @@ const DocumentListComp: FC<DocumentListProps> = ({
     });
     refetchDocsFols();
     setFolWithChildren(false);
-    setDeleteFol({ id: null, hasChildren: null });
+    setDeleteFol({ id: null });
   };
 
   const onUpdateDocTitle = async docTitle => {
@@ -233,7 +259,7 @@ const DocumentListComp: FC<DocumentListProps> = ({
       }
     });
     refetchDocsFols();
-    setEditFolderNameModal({ id: null, title: null });
+    setEditFolderNameModal({ id: null, name: null });
     setMenuOpenId(null);
   };
 
@@ -327,6 +353,7 @@ const DocumentListComp: FC<DocumentListProps> = ({
                 ref={(el: HTMLDivElement) =>
                   (docsAndFoldsRef.current[index] = el)
                 }
+                isOpen={true}
                 beginFunction={() => setDraggingItemId(document.id)}
                 endFunction={() => setDraggingItemId("")}
                 draggable={
@@ -343,7 +370,7 @@ const DocumentListComp: FC<DocumentListProps> = ({
                 hidden={document.id === droppedItemId}
                 key={document.id}
                 document={document}
-                onClick={e =>
+                onClick={() =>
                   document.type === "folder"
                     ? onFolderClick && onFolderClick(document)
                     : onDocumentClick && onDocumentClick(document)
@@ -357,16 +384,16 @@ const DocumentListComp: FC<DocumentListProps> = ({
                     }
                   ]}
                   closeOnClick={!(selectedToMove.id === document.id)}
-                  targetOffset="-165px -14px"
-                  targetPosition="top right"
+                  attachmentPosition="top right"
+                  offset="182px 14px" // 182 = 240(card height) - 2(card border) - 14(button offset) - 36(button height) - 6(dropdow offset)
                 >
                   {(isOpen: boolean) => (
-                    <DocumentMenuButton
-                      isOpen={menuOpenId === document.id}
+                    <MenuButtonContainer
+                      isOpen={isOpen}
                       onClick={e => onDocumentMenuClick(e, document)}
                     >
-                      <Icon name="ellipsis" />
-                    </DocumentMenuButton>
+                      <MenuButton isOpen={isOpen} />
+                    </MenuButtonContainer>
                   )}
                   <DropDown
                     constraints={[
@@ -380,7 +407,7 @@ const DocumentListComp: FC<DocumentListProps> = ({
                     attachmentPosition="top left"
                     offset="60px 0"
                   >
-                    {(isOpen: boolean) => (
+                    {() => (
                       <DocumentCardMenu
                         options={[
                           {
@@ -473,7 +500,10 @@ const DocumentListComp: FC<DocumentListProps> = ({
         okText="Aceptar"
         cancelText="Cancelar"
         onOk={confirmDeleteDoc}
-        onCancel={() => setDeleteDoc({ id: null, hasChildren: null })}
+        onCancel={() => {
+          setDeleteDoc({ id: null });
+          setSelectedToDel({ id: null, type: null });
+        }}
       />
       <DialogModal
         isOpen={!!deleteFol.id}
@@ -482,7 +512,10 @@ const DocumentListComp: FC<DocumentListProps> = ({
         okText="Aceptar"
         cancelText="Cancelar"
         onOk={confirmDeleteFol}
-        onCancel={() => setDeleteFol({ id: null, hasChildren: null })}
+        onCancel={() => {
+          setDeleteFol({ id: null });
+          setSelectedToDel({ id: null, type: null });
+        }}
       />
       <DialogModal
         isOpen={!!docWithEx}
@@ -492,11 +525,11 @@ const DocumentListComp: FC<DocumentListProps> = ({
         cancelText="Cancelar"
         onOk={onDeleteDocument}
         onCancel={() => {
-          setDeleteDoc({ id: null, hasChildren: null });
+          setSelectedToDel({ id: null, type: null });
+          setDeleteDoc({ id: null });
           setDocWithEx(false);
         }}
       />
-
       <DialogModal
         isOpen={!!folWithChildren}
         title="Aviso"
@@ -505,11 +538,11 @@ const DocumentListComp: FC<DocumentListProps> = ({
         cancelText="Cancelar"
         onOk={onDeleteFolder}
         onCancel={() => {
-          setDeleteFol({ id: null, hasChildren: null });
+          setSelectedToDel({ id: null, type: null });
+          setDeleteFol({ id: null });
           setFolWithChildren(false);
         }}
       />
-
       {editDocTitleModal.id && (
         <EditTitleModal
           title={editDocTitleModal.title}
@@ -540,11 +573,10 @@ export default DocumentListComp;
 
 const DocumentList = styled.div`
   display: grid;
+  grid-auto-rows: 240px;
   grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-  grid-auto-rows: 1fr;
-  grid-column-gap: 40px;
+  grid-column-gap: 20px;
   grid-row-gap: 40px;
-  margin-bottom: 40px;
 
   &::before {
     content: "";
@@ -560,33 +592,17 @@ const DocumentList = styled.div`
   }
 `;
 
-const DocumentMenuButton = styled.div<{ isOpen: boolean }>`
+const MenuButtonContainer = styled.div<{ isOpen: boolean }>`
   position: absolute;
   right: 14px;
   top: 14px;
-  width: 34px;
-  height: 34px;
-  align-items: center;
-  justify-content: center;
-  border-radius: 4px;
-  border: 1px solid ${colors.gray3};
-  background-color: white;
   display: none;
-
-  &:hover {
-    background-color: ${colors.gray1};
-    border-color: ${colors.gray4};
-  }
 
   ${props =>
     props.isOpen &&
     css`
-      display: flex;
-      border: solid 1px #dddddd;
-      background-color: "red";
-    `} svg {
-    transform: rotate(90deg);
-  }
+      display: initial;
+    `}
 `;
 
 const DocumentsAndPaginator = styled.div`
@@ -598,13 +614,13 @@ const DocumentsAndPaginator = styled.div`
 `;
 
 const DocumentsPaginator = styled(Paginator)`
-  margin-bottom: 60px;
+  margin: 40px 0 60px;
 `;
 
 const StyledDocumentCard = styled(DocumentCard)`
   &:hover {
-    ${DocumentMenuButton} {
-      display: flex;
+    ${MenuButtonContainer} {
+      display: initial;
     }
   }
 `;

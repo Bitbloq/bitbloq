@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import styled from "@emotion/styled";
-import { Document, Icon, useTranslate } from "@bitbloq/ui";
+import { Document, Icon, useTranslate, IHeaderButton } from "@bitbloq/ui";
 import {
   HorizontalBloqEditor,
   HardwareDesigner,
@@ -31,7 +31,9 @@ export interface JuniorProps {
   boards: IBoard[];
   components: IComponent[];
   backCallback: () => any;
-  headerRightContent: JSX.Element;
+  headerButtons?: IHeaderButton[];
+  headerRightContent: React.ReactChildren;
+  onHeaderButtonClick?: (id: string) => any;
 }
 
 const Junior: React.FunctionComponent<JuniorProps> = ({
@@ -47,7 +49,9 @@ const Junior: React.FunctionComponent<JuniorProps> = ({
   boards,
   components,
   backCallback,
-  headerRightContent
+  headerButtons,
+  headerRightContent,
+  onHeaderButtonClick
 }) => {
   const t = useTranslate();
 
@@ -75,7 +79,7 @@ const Junior: React.FunctionComponent<JuniorProps> = ({
     }
 
     if (!uploading) {
-      hideTimeout.current = setTimeout(() => {
+      hideTimeout.current = window.setTimeout(() => {
         setUploadSpinnerVisible(false);
       }, 5000);
     }
@@ -162,6 +166,10 @@ const Junior: React.FunctionComponent<JuniorProps> = ({
     setUploading(true);
     const web2Board = web2BoardRef.current;
     const code = bloqs2code(boards, components, bloqTypes, hardware, program);
+
+    if (!web2Board) {
+      return;
+    }
 
     if (!web2Board.isConnected()) {
       try {
@@ -253,6 +261,8 @@ const Junior: React.FunctionComponent<JuniorProps> = ({
         onTabChange={onTabChange}
         backCallback={backCallback}
         headerRightContent={headerRightContent}
+        headerButtons={headerButtons}
+        onHeaderButtonClick={onHeaderButtonClick}
       >
         {typeof children === "function" ? children(mainTabs) : mainTabs}
       </Document>

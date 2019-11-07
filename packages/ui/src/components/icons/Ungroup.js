@@ -11,4 +11,3 @@ const SvgUngroup = props => (
 );
 
 export default SvgUngroup;
-

@@ -1,7 +1,7 @@
 import React, { FC, useState } from "react";
 import { useMutation, Mutation } from "react-apollo";
 import dayjs from "dayjs";
-import { Spring } from "react-spring/renderprops";
+import { Spring } from "react-spring/renderprops.cjs";
 import styled from "@emotion/styled";
 import { css } from "@emotion/core";
 import {
@@ -21,7 +21,7 @@ import {
   SET_ACTIVESUBMISSION_MUTATION
 } from "../apollo/queries";
 
-export interface ExercisePanelProps {
+export interface IExercisePanelProps {
   exercise: any;
   onCancelSubmission: (value: any) => void;
   onCheckSubmission: (value: any) => void;
@@ -31,7 +31,7 @@ export interface ExercisePanelProps {
   onRemoveSubmission: (submissionID: string) => void;
 }
 
-const ExercisePanel: FC<ExercisePanelProps> = (props: ExercisePanelProps) => {
+const ExercisePanel: FC<IExercisePanelProps> = props => {
   const {
     exercise,
     onCancelSubmission,

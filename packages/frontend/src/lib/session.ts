@@ -1,7 +1,9 @@
 import { useEffect } from "react";
+import cookie from "cookie";
+import { NextApiRequest } from "next";
 import { flags } from "../config";
 
-interface Session {
+interface ISession {
   token: string;
   time: number;
 }
@@ -13,10 +15,17 @@ const {
 }: any = flags;
 const CHECK_TOKEN_MS = 500;
 
-const getSession = (tempSession?: string): Session | null => {
+const getSession = (
+  tempSession?: string,
+  req?: NextApiRequest
+): ISession | null => {
+  const cookies = cookie.parse(
+    req ? req.headers.cookie || "" : document.cookie
+  );
+
   const sessionString = tempSession
-    ? window.sessionStorage.getItem(`session-${tempSession}`)
-    : window.localStorage.getItem("session");
+    ? cookies[`session-${tempSession}`]
+    : cookies.session;
 
   if (!sessionString) {
     return null;
@@ -26,32 +35,46 @@ const getSession = (tempSession?: string): Session | null => {
 
   if (Date.now() - session.time > TOKEN_DURATION_MINUTES * 60000) {
     if (session.token) {
-      triggerEvent({ event: "expired", tempSession });
+      triggerEvent({ tempSession, event: "expired" });
       setSession({ token: "", time: 0 }, tempSession);
     }
     return null;
-  } else {
-    return session;
   }
+
+  return session;
 };
 
-const setSession = (session?: Session, tempSession?: string) => {
+const setSession = (session?: ISession, tempSession?: string) => {
   const sessionString = JSON.stringify(session);
   if (tempSession) {
-    window.sessionStorage.setItem(`session-${tempSession}`, sessionString);
+    document.cookie = cookie.serialize(
+      `session-${tempSession}`,
+      sessionString,
+      {
+        sameSite: true,
+        path: "/"
+      }
+    );
   } else {
-    window.localStorage.setItem("session", sessionString);
+    document.cookie = cookie.serialize("session", sessionString, {
+      sameSite: true,
+      path: "/",
+      maxAge: TOKEN_DURATION_MINUTES * 60 + RENEW_TOKEN_SECONDS
+    });
   }
 };
 
-export const getToken = (tempSession?: string): string | null => {
-  const session = getSession(tempSession);
+export const getToken = (
+  tempSession?: string,
+  req?: NextApiRequest
+): string | null => {
+  const session = getSession(tempSession, req);
   return session ? session.token : null;
 };
 
 export const setToken = (token: string, tempSession?: string) => {
   setSession({ token, time: token ? Date.now() : 0 }, tempSession);
-  triggerEvent({ event: "new-token", tempSession, data: token });
+  triggerEvent({ tempSession, event: "new-token", data: token });
 };
 
 export const shouldRenewToken = (tempSession?: string): boolean => {
@@ -62,7 +85,7 @@ export const shouldRenewToken = (tempSession?: string): boolean => {
     : false;
 };
 
-export interface SessionEvent {
+export interface ISessionEvent {
   event: string;
   tempSession?: string;
   error?: any;
@@ -70,31 +93,34 @@ export interface SessionEvent {
   data?: any;
 }
 
-export type SessionCallback = (event: SessionEvent) => any;
+export type SessionCallback = (event: ISessionEvent) => any;
 
 const channel =
   typeof BroadcastChannel !== "undefined"
     ? new BroadcastChannel("bitbloq-session")
     : null;
-const triggerEvent = (event: SessionEvent) => {
-  channel && channel.postMessage(event);
+
+const triggerEvent = (event: ISessionEvent) => {
+  if (channel) {
+    channel.postMessage(event);
+  }
 };
 
 export const onSessionError = (error: any, tempSession?: string) => {
-  triggerEvent({ event: "error", tempSession, error });
+  triggerEvent({ tempSession, error, event: "error" });
 };
 
 export const watchSession = (tempSession?: string) => {
-  setInterval(() => {
+  return setInterval(() => {
     const session = getSession(tempSession);
     if (session && session.token) {
       const elapsedSeconds = Math.floor((Date.now() - session.time) / 1000);
       const remainingSeconds = TOKEN_DURATION_MINUTES * 60 - elapsedSeconds;
       if (remainingSeconds < TOKEN_WARNING_SECONDS) {
         triggerEvent({
-          event: "expiration-warning",
           remainingSeconds,
-          tempSession
+          tempSession,
+          event: "expiration-warning"
         });
       }
     }
@@ -107,9 +133,9 @@ export const useSessionEvent = (
   tempSession?: string
 ) => {
   useEffect(() => {
-    const channel = new BroadcastChannel("bitbloq-session");
-    channel.onmessage = e => {
-      const event = e.data as SessionEvent;
+    const eventChannel = new BroadcastChannel("bitbloq-session");
+    eventChannel.onmessage = e => {
+      const event = e.data as ISessionEvent;
       if (
         eventName === event.event &&
         (!event.tempSession || event.tempSession === tempSession)
@@ -119,7 +145,7 @@ export const useSessionEvent = (
     };
 
     return () => {
-      channel.close();
+      eventChannel.close();
     };
   }, []);
 };

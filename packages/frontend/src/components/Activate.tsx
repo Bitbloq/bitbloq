@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
+import Router from "next/router";
 import styled from "@emotion/styled";
-import { navigate } from "gatsby";
 import { useMutation } from "react-apollo";
 import { Spinner } from "@bitbloq/ui";
 import gql from "graphql-tag";
@@ -23,7 +23,7 @@ const Activate = () => {
     activateAccount({ variables: { token } })
       .then(({ data }) => {
         setToken(data.activateAccount);
-        navigate("/app");
+        Router.push("/app");
       })
       .catch(e => setError(e));
   }, []);

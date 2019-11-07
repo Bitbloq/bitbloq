@@ -1,10 +1,6 @@
 import React from "react";
 import { Junior } from "@bitbloq/junior";
-import {
-  bloqTypes,
-  boards,
-  components
-} from "../config";
+import { bloqTypes, boards, components } from "../config";
 import { EditorProps } from "../types";
 
 const JuniorEditor: React.FunctionComponent<EditorProps> = ({
@@ -17,8 +13,9 @@ const JuniorEditor: React.FunctionComponent<EditorProps> = ({
   title,
   onEditTitle,
   headerRightContent,
-  canEditTitle,
-  backCallback
+  backCallback,
+  headerButtons,
+  onHeaderButtonClick
 }) => {
   return (
     <Junior
@@ -27,7 +24,6 @@ const JuniorEditor: React.FunctionComponent<EditorProps> = ({
       onTabChange={onTabChange}
       title={title}
       onEditTitle={onEditTitle}
-      canEditTitle={canEditTitle}
       bloqTypes={bloqTypes}
       initialContent={content || {}}
       onContentChange={onContentChange}
@@ -35,6 +31,8 @@ const JuniorEditor: React.FunctionComponent<EditorProps> = ({
       components={components}
       backCallback={backCallback}
       headerRightContent={headerRightContent}
+      headerButtons={headerButtons}
+      onHeaderButtonClick={onHeaderButtonClick}
     >
       {getTabs}
     </Junior>

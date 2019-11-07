@@ -77,7 +77,6 @@ export const DOCS_FOLDERS_PAGE_QUERY = gql`
         updatedAt
         image
         parent
-        hasChildren
       }
       parentsPath {
         id
@@ -86,6 +85,12 @@ export const DOCS_FOLDERS_PAGE_QUERY = gql`
       pagesNumber
       nFolders
     }
+  }
+`;
+
+export const HAS_EXERCISES_QUERY = gql`
+  query HasExercises($id: ObjectID!, $type: String) {
+    hasExercises(id: $id, type: $type)
   }
 `;
 

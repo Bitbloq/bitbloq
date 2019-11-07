@@ -3,7 +3,6 @@ import React, {
   FC,
   SetStateAction,
   useEffect,
-  useLayoutEffect,
   useRef,
   useState
 } from "react";
@@ -47,7 +46,7 @@ const Breadcrumbs: React.FC<BreadcrumbsProps> = ({ links, title }) => {
     }
   };
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     setElementMaxWidth();
     window.addEventListener("resize", setElementMaxWidth);
 

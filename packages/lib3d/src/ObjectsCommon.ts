@@ -113,7 +113,7 @@ export default class ObjectsCommon {
     group.updateWorldMatrix(false, true);
 
     group.children.forEach(child => {
-      const clone = child.clone();
+      const clone: THREE.Object3D = child.clone();
       clone.matrix = child.matrix.clone();
       clone.matrixWorld = child.matrixWorld.clone();
 
@@ -234,7 +234,9 @@ export default class ObjectsCommon {
     this.setOperations(operations);
     this.setViewOptions(viewOptions);
     // each new object must have a new ID
-    if (this.id !== "") this.id = uuid();
+    if (this.id !== "") {
+      this.id = uuid();
+    }
     this.parent = undefined;
   }
 

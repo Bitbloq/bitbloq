@@ -1,11 +1,11 @@
 import React, { useState, useRef, useEffect } from "react";
-import { navigate } from "gatsby";
+import Router from "next/router";
 import { saveAs } from "file-saver";
 import Loading from "./Loading";
 import { documentTypes } from "../config";
 import { Button, DialogModal, useTranslate } from "@bitbloq/ui";
 import styled from "@emotion/styled";
-import { SessionEvent, setToken, useSessionEvent } from "../lib/session";
+import { ISessionEvent, setToken, useSessionEvent } from "../lib/session";
 import { useQuery, useMutation } from "@apollo/react-hooks";
 import {
   CREATE_DOCUMENT_MUTATION,
@@ -15,6 +15,7 @@ import {
 import LoginForm from "./LoginForm";
 import HeaderRightContent from "./HeaderRightContent";
 import UserInfo from "./UserInfo";
+import { EditorProps } from "../types";
 
 interface PlaygroundProps {
   type?: string;
@@ -98,12 +99,10 @@ const Playground: React.FunctionComponent<PlaygroundProps> = ({
         createDocument: { id: newId }
       }
     } = await createDocumentMutation({ variables: document });
-    navigate(`/app/document/${folderID}/${currentType}/${newId}`, {
-      replace: true
-    });
+    Router.replace(`/app/edit-document/${folderID}/${type}/${newId}`);
   };
 
-  useSessionEvent("new-token", (event: SessionEvent) => {
+  useSessionEvent("new-token", (event: ISessionEvent) => {
     const token: string = event.data;
     setUserLogged(!!token);
   });
@@ -133,7 +132,7 @@ const Playground: React.FunctionComponent<PlaygroundProps> = ({
   };
 
   const documentType = documentTypes[currentType || "3d"];
-  const EditorComponent = documentType.editorComponent;
+  const EditorComponent = documentType.editorComponent as React.ElementType;
 
   const onSaveDocument = () => {
     const title = "playground";
@@ -209,7 +208,7 @@ const Playground: React.FunctionComponent<PlaygroundProps> = ({
         }
         documentAdvancedMode={advancedModeRef.current}
         headerRightContent={headerRightContent}
-        backCallback={() => navigate("/")}
+        backCallback={() => Router.push("/")}
         isPlayground
       />
     </>

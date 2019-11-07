@@ -1,30 +1,27 @@
-import React, { FC } from "react";
+import React from "react";
 import styled from "@emotion/styled";
-import { css } from "@emotion/core";
-import { DropDown, Icon } from "@bitbloq/ui";
+import { colors, DropDown } from "@bitbloq/ui";
 import useUserData from "../lib/useUserData";
 import useLogout from "../lib/useLogout";
+import MenuButton from "./MenuButton";
 
 const UserSession = () => {
   const userData = useUserData();
   const logout = useLogout();
 
   return (
-    <Container>
+    <>
       <UserName>{userData && userData.name}</UserName>
+      <UserAvatar src={userData ? userData.avatar : ""} />
       <DropDown>
-        {(isOpen: boolean) => (
-          <ContextButton isOpen={isOpen}>
-            <Icon name="ellipsis" />
-          </ContextButton>
-        )}
+        {(isOpen: boolean) => <MenuButton isOpen={isOpen} />}
         <ContextMenu>
           <ContextMenuOption onClick={() => logout()}>
             Cerrar sesión
           </ContextMenuOption>
         </ContextMenu>
       </DropDown>
-    </Container>
+    </>
   );
 };
 
@@ -32,38 +29,22 @@ export default UserSession;
 
 /* styled components */
 
-const Container = styled.div`
-  display: flex;
-  align-items: center;
-`;
-
 const UserName = styled.div`
   font-size: 14px;
-  margin-right: 10px;
 `;
 
-interface ContextButtonProps {
-  isOpen: boolean;
+interface ImageProps {
+  src: string;
 }
-const ContextButton = styled.div<ContextButtonProps>`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 30px;
-  height: 30px;
-  border-radius: 4px;
-  background-color: white;
-  cursor: pointer;
-  border: solid 1px white;
 
-  ${props =>
-    props.isOpen &&
-    css`
-      border: solid 1px #dddddd;
-      background-color: #e8e8e8;
-    `} svg {
-    transform: rotate(90deg);
-  }
+const UserAvatar = styled.div<ImageProps>`
+  background-color: ${colors.grayAvatar};
+  background-image: url(${props => props.src});
+  background-size: cover;
+  background-position: center;
+  border-radius: 50%;
+  height: 40px;
+  width: 40px;
 `;
 
 const ContextMenu = styled.div`

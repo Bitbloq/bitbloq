@@ -11,4 +11,3 @@ const SvgLogoJunior = props => (
 );
 
 export default SvgLogoJunior;
-

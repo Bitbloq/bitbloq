@@ -1,13 +1,10 @@
 import * as React from "react";
-import { ThreeD } from "@bitbloq/3d";
+import { ThreeD, IThreeDRef } from "@bitbloq/3d";
 import { STLLoader } from "@bitbloq/lib3d";
 import { Mutation } from "react-apollo";
-import { navigate } from "gatsby";
 import { colors, Icon, withTranslate, DialogModal } from "@bitbloq/ui";
 import { addShapeGroups } from "../config";
-import BrowserVersionWarning from "./BrowserVersionWarning";
 import ExportSTLModal from "./ExportSTLModal";
-import { getChromeVersion } from "../util";
 import { EditorProps } from "../types";
 import { maxSTLFileSize } from "../config";
 import { UPLOAD_STL_MUTATION } from "../apollo/queries";
@@ -80,12 +77,12 @@ const getMenuOptions = (baseMenuOptions, t, props) => [
 ];
 
 class ThreeDEditor extends React.Component<EditorProps> {
-  threedRef = React.createRef<ThreeD>();
+  threedRef = React.createRef<IThreeDRef>();
   openSTLInput = React.createRef<HTMLInputElement>();
 
   readonly state = {
     showExportModal: false,
-    showSTLError: "",
+    showSTLError: ""
   };
 
   onMenuOptionClick = option => {
@@ -183,7 +180,6 @@ class ThreeDEditor extends React.Component<EditorProps> {
       title,
       onEditTitle,
       onContentChange,
-      canEditTitle,
       headerButtons,
       headerRightContent,
       onHeaderButtonClick,
@@ -195,10 +191,6 @@ class ThreeDEditor extends React.Component<EditorProps> {
     } = this.props;
     const { showExportModal, showSTLError } = this.state;
 
-    if (getChromeVersion() < 69) {
-      return <BrowserVersionWarning version={69} color={brandColor} />;
-    }
-
     return (
       <>
         <ThreeD
@@ -208,7 +200,6 @@ class ThreeDEditor extends React.Component<EditorProps> {
           tabIndex={tabIndex}
           onTabChange={onTabChange}
           title={title}
-          canEditTitle={canEditTitle}
           onEditTitle={onEditTitle}
           menuOptions={base => getMenuOptions(base, t, this.props)}
           addShapeGroups={base => [...base, ...addShapeGroups]}

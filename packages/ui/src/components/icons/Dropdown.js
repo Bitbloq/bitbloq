@@ -11,4 +11,3 @@ const SvgDropdown = props => (
 );
 
 export default SvgDropdown;
-

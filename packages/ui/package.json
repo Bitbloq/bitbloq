@@ -6,10 +6,7 @@
   "types": "src/export.ts",
   "scripts": {
     "test": "echo \"No test specified\" && exit 0",
-    "coveralls": "echo \"No test specified\" && exit 0",
-    "tslint": "echo \"No tslint specified\" && exit 0",
-    "prettier": "prettier \"**/*.{ts,js,tsx,jsx,json,md,scss,yml}\"",
-    "prettier:ts": "prettier --write \"**/*.{ts,tsx}\""
+    "coveralls": "echo \"No test specified\" && exit 0"
   },
   "authors": [
     {
@@ -47,10 +44,11 @@
   "dependencies": {
     "@emotion/core": "^10.0.5",
     "@emotion/styled": "^10.0.5",
+    "babel-plugin-emotion": "^10.0.23",
     "chroma-js": "^2.0.2",
     "react": "^16.8.3",
-    "react-dom": "^16.9.0",
     "react-color": "^2.14.1",
+    "react-dom": "^16.9.0",
     "react-select": "^2.1.2",
     "react-tether": "^2.0.0",
     "uuid": "^3.3.3"

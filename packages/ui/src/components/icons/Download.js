@@ -11,4 +11,3 @@ const SvgDownload = props => (
 );
 
 export default SvgDownload;
-

@@ -1,7 +1,9 @@
 import React, { FC, useState, useRef, useEffect } from "react";
 import styled from "@emotion/styled";
-import { navigate, Link } from "gatsby";
-import { Global, css } from "@emotion/core";
+import { NextPage } from "next";
+import Router from "next/router";
+import withApollo, { IContext } from "../apollo/withApollo";
+import redirect from "../lib/redirect";
 import {
   baseStyles,
   colors,
@@ -10,25 +12,24 @@ import {
   Icon,
   DropDown,
   HorizontalRule,
-  Spinner
+  Spinner,
+  useTranslate
 } from "@bitbloq/ui";
-import { useApolloClient, useQuery } from "@apollo/react-hooks";
+import { useApolloClient } from "@apollo/react-hooks";
 import { ME_QUERY, EXERCISE_BY_CODE_QUERY } from "../apollo/queries";
 import AppHeader from "../components/AppHeader";
-import BrowserVersionWarning from "../components/BrowserVersionWarning";
 import LandingExamples from "../components/LandingExamples";
+import Layout from "../components/Layout";
 import NewDocumentDropDown from "../components/NewDocumentDropDown";
-import SEO from "../components/SEO";
 import logoBetaImage from "../images/logo-beta.svg";
 import { documentTypes } from "../config";
-import { getChromeVersion } from "../util";
 import bqLogo from "../images/bq-logo.svg";
 import studentStep1Image from "../images/student-step-1.svg";
 import studentStep2Image from "../images/student-step-2.svg";
 import heroImage from "../images/home_beta-decoration.svg";
 
-const IndexPage: FC = () => {
-  const { data, loading } = useQuery(ME_QUERY);
+const IndexPage: NextPage = () => {
+  const t = useTranslate();
   const client = useApolloClient();
 
   const [exerciseCode, setExerciseCode] = useState("");
@@ -51,19 +52,6 @@ const IndexPage: FC = () => {
     return () => document.removeEventListener("scroll", handleScroll);
   }, []);
 
-  if (loading) {
-    return <Loading />;
-  }
-
-  if (getChromeVersion() < 69) {
-    return <BrowserVersionWarning version={69} />;
-  }
-
-  if (data && data.me) {
-    navigate("/app");
-    return <Loading />;
-  }
-
   const onNewDocument = (type: string) => {
     window.open(`/app/playground/${type}`);
   };
@@ -81,9 +69,9 @@ const IndexPage: FC = () => {
       reader.onload = e => {
         const document = JSON.parse(reader.result as string);
         const channel = new BroadcastChannel("bitbloq-landing");
-        channel.onmessage = e => {
-          if (e.data.command === "open-document-ready") {
-            channel.postMessage({ command: "open-document", document });
+        channel.onmessage = event => {
+          if (event.data.command === "open-document-ready") {
+            channel.postMessage({ document, command: "open-document" });
             channel.close();
           }
         };
@@ -118,129 +106,123 @@ const IndexPage: FC = () => {
 
   return (
     <>
-      <SEO title="Home" keywords={[`bitbloq`]} />
-      <Global styles={baseStyles} />
       <div ref={headerRef}>
         <AppHeader isSticky={isHeaderSticky}>
-          <HeaderButtonGroup>
-            <DropDown
-              attachmentPosition={"top center"}
-              targetPosition={"bottom center"}
-              closeOnClick={false}
-            >
-              {(isOpen: boolean) => (
-                <HeaderButton tertiary>
-                  <Icon name="airplane-document" />
+          <DropDown
+            attachmentPosition={"top center"}
+            targetPosition={"bottom center"}
+            closeOnClick={false}
+          >
+            {(isOpen: boolean) => (
+              <HeaderButton tertiary>
+                <Icon name="airplane-document" />
+                {t("documents.go-to-exercise")}
+              </HeaderButton>
+            )}
+            <ExerciseDropDown>
+              <ExerciseForm>
+                <label>Código del ejercicio</label>
+                <Input
+                  type="text"
+                  placeholder="Código del ejercicio"
+                  value={exerciseCode}
+                  error={exerciseError}
+                  onChange={e => setExerciseCode(e.target.value)}
+                />
+                {exerciseError && <Error>El código no es válido</Error>}
+                <HeaderButton
+                  onClick={() => onOpenExercise()}
+                  disabled={loadingExercise}
+                >
                   Ir al ejercicio
                 </HeaderButton>
-              )}
-              <ExerciseDropDown>
-                <ExerciseForm>
-                  <label>Código del ejercicio</label>
-                  <Input
-                    type="text"
-                    placeholder="Código del ejercicio"
-                    value={exerciseCode}
-                    error={exerciseError}
-                    onChange={e => setExerciseCode(e.target.value)}
-                  />
-                  {exerciseError && <Error>El código no es válido</Error>}
-                  <HeaderButton
-                    onClick={() => onOpenExercise()}
-                    disabled={loadingExercise}
-                  >
-                    Ir al ejercicio
-                  </HeaderButton>
-                </ExerciseForm>
-              </ExerciseDropDown>
-            </DropDown>
-            <DropDown
-              attachmentPosition={"top center"}
-              targetPosition={"bottom center"}
-            >
-              {(isOpen: boolean) => (
-                <HeaderButton tertiary>
-                  <Icon name="new-document" />
-                  Nuevo documento
-                </HeaderButton>
-              )}
+              </ExerciseForm>
+            </ExerciseDropDown>
+          </DropDown>
+          <DropDown
+            attachmentPosition={"top center"}
+            targetPosition={"bottom center"}
+          >
+            {(isOpen: boolean) => (
+              <HeaderButton tertiary>
+                <Icon name="new-document" />
+                Nuevo documento
+              </HeaderButton>
+            )}
 
-              <NewDocumentDropDown
-                onNewDocument={onNewDocument}
-                onOpenDocument={onOpenDocument}
-              />
-            </DropDown>
-            <HeaderButton onClick={() => navigate("/login")}>
-              Entrar
-            </HeaderButton>
-            <HeaderButton secondary onClick={() => navigate("/signup")}>
-              Crear una cuenta
-            </HeaderButton>
-          </HeaderButtonGroup>
+            <NewDocumentDropDown
+              onNewDocument={onNewDocument}
+              onOpenDocument={onOpenDocument}
+            />
+          </DropDown>
+          <HeaderButton onClick={() => Router.push("/login")}>
+            Entrar
+          </HeaderButton>
+          <HeaderButton secondary onClick={() => Router.push("/signup")}>
+            Crear una cuenta
+          </HeaderButton>
         </AppHeader>
       </div>
-      <Container>
-        <Hero>
-          <h1>
-            <img src={logoBetaImage} alt="Bitbloq Beta" />
-          </h1>
-          <p>
-            La plataforma más completa para trabajar el diseño 3D, la
-            programación y la robótica en el aula.
-          </p>
-        </Hero>
-      </Container>
-      <Tools>
-        <Container>
-          <h2>
-            <Icon name="new-document" />
-            Crea o abre un documento
-          </h2>
-          <ToolsList>
-            {Object.keys(documentTypes)
-              .map(id => ({ ...documentTypes[id], id }))
-              .map(type => (
-                <Tool key={type.id}>
-                  <ToolIcon color={type.color}>
-                    <Icon name={type.icon} />
-                  </ToolIcon>
-                  <h3>{type.label}</h3>
-                  <ToolLevel>{type.level}</ToolLevel>
-                  <p>{type.landingText}</p>
-                  {type.supported && (
-                    <Button
-                      {...{ [type.buttonType]: true }}
-                      onClick={() => onNewDocument(type.id)}
-                    >
-                      <PlusIcon>
-                        <Icon name="plus" />
-                      </PlusIcon>
-                      Nuevo documento
-                    </Button>
-                  )}
-                  {!type.supported && <ComingSoon>Próximamente</ComingSoon>}
-                </Tool>
-              ))}
-            <OpenDocumentPanel>
-              <OpenDocumentIcon color="white">
-                <Icon name="open-document" />
-              </OpenDocumentIcon>
-              <h3>Abrir documento desde archivo</h3>
-              <p>
-                Abre cualquier documento de tipo .bitbloq que hayas guardado en
-                tu ordenador.
-              </p>
-              <OpenDocumentButton quaternary onClick={() => onOpenDocument()}>
-                <Icon name="open-document" />
-                Abrir documento
-              </OpenDocumentButton>
-            </OpenDocumentPanel>
-          </ToolsList>
-        </Container>
-      </Tools>
-      <OpenExercise>
-        <Container>
-          <OpenExerciseWrap>
+      <Layout>
+        <Section>
+          <Hero>
+            <h1>
+              <img src={logoBetaImage} alt="Bitbloq Beta" />
+            </h1>
+            <p>
+              La plataforma más completa para trabajar el diseño 3D, la
+              programación y la robótica en el aula.
+            </p>
+          </Hero>
+          <Tools>
+            <h2>
+              <Icon name="new-document" />
+              Crea o abre un documento
+            </h2>
+            <ToolsList>
+              {Object.keys(documentTypes)
+                .map(id => ({ ...documentTypes[id], id }))
+                .map(type => (
+                  <Tool key={type.id}>
+                    <ToolIcon color={type.color}>
+                      <Icon name={type.icon} />
+                    </ToolIcon>
+                    <h3>{type.label}</h3>
+                    <ToolLevel>{type.level}</ToolLevel>
+                    <p>{type.landingText}</p>
+                    {type.supported && (
+                      <Button
+                        {...{ [type.buttonType]: true }}
+                        onClick={() => onNewDocument(type.id)}
+                      >
+                        <PlusIcon>
+                          <Icon name="plus" />
+                        </PlusIcon>
+                        Nuevo documento
+                      </Button>
+                    )}
+                    {!type.supported && <ComingSoon>Próximamente</ComingSoon>}
+                  </Tool>
+                ))}
+              <OpenDocumentPanel>
+                <OpenDocumentIcon color="white">
+                  <Icon name="open-document" />
+                </OpenDocumentIcon>
+                <h3>Abrir documento desde archivo</h3>
+                <p>
+                  Abre cualquier documento de tipo .bitbloq que hayas guardado
+                  en tu ordenador.
+                </p>
+                <OpenDocumentButton quaternary onClick={() => onOpenDocument()}>
+                  <Icon name="open-document" />
+                  Abrir documento
+                </OpenDocumentButton>
+              </OpenDocumentPanel>
+            </ToolsList>
+          </Tools>
+        </Section>
+        <Section>
+          <OpenExercise>
             <OpenExerciseInfo>
               <h2>
                 <Icon name="airplane-document" />
@@ -283,25 +265,25 @@ const IndexPage: FC = () => {
                 </ExerciseForm>
               </OpenExercisePanelContent>
             </OpenExercisePanel>
-          </OpenExerciseWrap>
-        </Container>
-      </OpenExercise>
-      <LandingExamples />
+          </OpenExercise>
+        </Section>
+        <Section>
+          <LandingExamples />
+        </Section>
+      </Layout>
       <Footer>
-        <MainFooter>
-          <FooterContainer>
-            {/* <FooterLeft>
-              <h2>Contacto</h2>
-              <p>Bq Educación</p>
-              <p>900 00 00 00</p>
-              <p>soporte.bitbloq@bq.com</p>
-            </FooterLeft> */}
-            <FooterRight>
-              <p>Bitbloq es un proyecto de:</p>
-              <img src={bqLogo} alt="BQ" />
-            </FooterRight>
-          </FooterContainer>
-        </MainFooter>
+        <FooterContainer>
+          {/* <FooterLeft>
+            <h2>Contacto</h2>
+            <p>Bq Educación</p>
+            <p>900 00 00 00</p>
+            <p>soporte.bitbloq@bq.com</p>
+          </FooterLeft> */}
+          <FooterRight>
+            <p>Bitbloq es un proyecto de:</p>
+            <img src={bqLogo} alt="BQ" />
+          </FooterRight>
+        </FooterContainer>
         <LegalLinks>
           <a href="#">Condiciones generales</a>
           {" | "}
@@ -320,35 +302,37 @@ const IndexPage: FC = () => {
   );
 };
 
-export default IndexPage;
+IndexPage.getInitialProps = async (ctx: IContext) => {
+  const { apolloClient } = ctx;
+  try {
+    const { data } = await apolloClient.query({
+      query: ME_QUERY,
+      errorPolicy: "ignore"
+    });
+    if (data && data.me) {
+      redirect(ctx, "/app");
+    }
+  } catch (e) {}
+
+  return {};
+};
+
+export default withApollo(IndexPage, { requiresSession: false });
 
 /* styled components */
 
-interface LoadingProps {
+interface ILoadingProps {
   type?: string;
 }
-const Loading = styled(Spinner)<LoadingProps>`
+
+const Loading = styled(Spinner)<ILoadingProps>`
   position: absolute;
   height: 100%;
   width: 100%;
-  background-color: ${(props: LoadingProps) =>
+  background-color: ${props =>
     (props.type && documentTypes[props.type].color) || colors.gray1};
-  color: ${(props: LoadingProps) => (props.type ? "white" : "inherit")};
+  color: ${props => (props.type ? "white" : "inherit")};
   display: flex;
-`;
-
-const Container = styled.div`
-  max-width: 1280px;
-  box-sizing: border-box;
-  margin: 0px auto;
-  padding: 0px 50px;
-`;
-
-const HeaderButtonGroup = styled.div`
-  display: flex;
-  button {
-    margin-left: 10px;
-  }
 `;
 
 const HeaderButton = styled(Button)`
@@ -398,6 +382,16 @@ const ExerciseForm = styled.div`
   }
 `;
 
+const Section = styled.div`
+  :not(:last-of-type):after {
+    border-bottom: 1px solid #e0e0e0;
+    content: "";
+    left: 0;
+    position: absolute;
+    width: 100vw;
+  }
+`;
+
 const Hero = styled.div`
   padding: 0px 50px;
   box-sizing: border-box;
@@ -427,8 +421,8 @@ const Hero = styled.div`
 `;
 
 const Tools = styled.div`
-  border-bottom: 1px solid #e0e0e0;
   margin-top: 60px;
+
   h2 {
     display: flex;
     justify-content: center;
@@ -476,10 +470,11 @@ const OpenDocumentPanel = styled(Tool)`
   align-self: flex-start;
 `;
 
-interface ToolIconProps {
+interface IToolIconProps {
   color: string;
 }
-const ToolIcon = styled.div<ToolIconProps>`
+
+const ToolIcon = styled.div<IToolIconProps>`
   width: 60px;
   height: 60px;
   border-radius: 4px;
@@ -544,10 +539,6 @@ const ComingSoon = styled.div`
 `;
 
 const OpenExercise = styled.div`
-  border-bottom: 1px solid #e0e0e0;
-`;
-
-const OpenExerciseWrap = styled.div`
   width: 83.33%;
   display: flex;
   margin: 80px 0px 80px 8.33%;
@@ -614,13 +605,10 @@ const OpenExercisePanelContent = styled.div`
 const Footer = styled.div`
   color: white;
   font-size: 14px;
-`;
-
-const MainFooter = styled.div`
   background-color: #5d6069;
 `;
 
-const FooterContainer = styled(Container)`
+const FooterContainer = styled(Layout)`
   display: flex;
   padding: 40px 50px;
   justify-content: flex-end;

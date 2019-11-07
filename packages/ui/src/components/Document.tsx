@@ -1,10 +1,7 @@
 import * as React from "react";
 import styled from "@emotion/styled";
 import { css } from "@emotion/core";
-import MenuBar, {
-  MainMenuOption,
-  MenuOptionClickHandler
-} from "./MenuBar";
+import MenuBar, { MainMenuOption, MenuOptionClickHandler } from "./MenuBar";
 import Icon from "./Icon";
 import Tooltip from "./Tooltip";
 import { IHeaderButton } from "../types";

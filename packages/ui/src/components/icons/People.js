@@ -11,4 +11,3 @@ const SvgPeople = props => (
 );
 
 export default SvgPeople;
-

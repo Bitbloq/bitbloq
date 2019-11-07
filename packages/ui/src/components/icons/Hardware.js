@@ -11,4 +11,3 @@ const SvgHadware = props => (
 );
 
 export default SvgHadware;
-

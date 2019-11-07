@@ -107,4 +107,3 @@ const SvgButtonReleased = props => (
 );
 
 export default SvgButtonReleased;
-

@@ -12,4 +12,3 @@ const SvgRestart = props => (
 );
 
 export default SvgRestart;
-

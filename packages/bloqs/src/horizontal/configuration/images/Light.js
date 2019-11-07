@@ -113,4 +113,3 @@ const SvgLight = props => (
 );
 
 export default SvgLight;
-

@@ -1,14 +1,11 @@
 import React, { useState } from "react";
 import styled from "@emotion/styled";
-import { navigate } from "gatsby";
-import { Global } from "@emotion/core";
-import BrowserVersionWarning from "../components/BrowserVersionWarning";
-import SEO from "../components/SEO";
+import Router from "next/router";
+import withApollo from "../apollo/withApollo";
 import { Mutation } from "react-apollo";
 import gql from "graphql-tag";
 import { Formik, Form, Field } from "formik";
 import {
-  baseStyles,
   colors,
   Input,
   Panel,
@@ -18,7 +15,7 @@ import {
   Checkbox
 } from "@bitbloq/ui";
 import Survey, { Question, QuestionType } from "../components/Survey";
-import { getChromeVersion, isValidEmail } from "../util";
+import { isValidEmail } from "../util";
 import logoBetaImage from "../images/logo-beta.svg";
 
 const SIGNUP_MUTATION = gql`
@@ -94,18 +91,21 @@ enum SignupStep {
   UserData
 }
 
-class SignupPageState {
-  readonly currentStep: SignupStep = SignupStep.Survey;
-  readonly surveyValues: object = {};
+interface ISignupPageState {
+  currentStep: SignupStep;
+  surveyValues: object;
 }
 
-class SignupPage extends React.Component<any, SignupPageState> {
-  readonly state = new SignupPageState();
+class SignupPage extends React.Component<any, ISignupPageState> {
+  public readonly state = {
+    currentStep: SignupStep.Survey,
+    surveyValues: {}
+  };
 
   wrapRef = React.createRef<HTMLDivElement>();
   formRef = React.createRef<Formik>();
 
-  componentDidUpdate(prevProps, prevState: SignupPageState) {
+  componentDidUpdate(prevProps, prevState: ISignupPageState) {
     const { currentStep } = this.state;
     const { signupError } = this.props;
     if (currentStep !== prevState.currentStep && this.wrapRef.current) {
@@ -142,12 +142,11 @@ class SignupPage extends React.Component<any, SignupPageState> {
           onChange={values => this.setState({ surveyValues: values })}
         />
         <Buttons>
-          <Button secondary onClick={() => navigate("/")}>
+          <Button secondary onClick={() => Router.push("/")}>
             Cancelar
           </Button>
           <Button
             tertiary
-            default
             onClick={() => this.setState({ currentStep: SignupStep.UserData })}
           >
             Siguiente
@@ -293,21 +292,17 @@ class SignupPage extends React.Component<any, SignupPageState> {
     const { currentStep } = this.state;
 
     return (
-      <>
-        <SEO title="Signup" keywords={[`bitbloq`]} />
-        <Global styles={baseStyles} />
-        <Wrap ref={this.wrapRef}>
-          <Container>
-            <Logo src={logoBetaImage} alt="Bitbloq Beta" />
-            <SignupPanel>
-              <PanelHeader>Crear cuenta</PanelHeader>
-              <HorizontalRule small />
-              {currentStep === SignupStep.Survey && this.renderSurveyStep()}
-              {currentStep === SignupStep.UserData && this.renderUserDataStep()}
-            </SignupPanel>
-          </Container>
-        </Wrap>
-      </>
+      <Wrap ref={this.wrapRef}>
+        <Container>
+          <Logo src={logoBetaImage} alt="Bitbloq Beta" />
+          <SignupPanel>
+            <PanelHeader>Crear cuenta</PanelHeader>
+            <HorizontalRule small />
+            {currentStep === SignupStep.Survey && this.renderSurveyStep()}
+            {currentStep === SignupStep.UserData && this.renderUserDataStep()}
+          </SignupPanel>
+        </Container>
+      </Wrap>
     );
   }
 }
@@ -315,25 +310,17 @@ class SignupPage extends React.Component<any, SignupPageState> {
 const SignupPageWithMutation = props => {
   const [accountCreated, setAccountCreated] = useState(false);
 
-  if (getChromeVersion() < 69) {
-    return <BrowserVersionWarning version={69} />;
-  }
-
   if (accountCreated) {
     return (
-      <>
-        <SEO title="Signup" keywords={[`bitbloq`]} />
-        <Global styles={baseStyles} />
-        <Wrap>
-          <DialogModal
-            isOpen={true}
-            title="Cuenta creada"
-            text="Tu cuenta ha sido creada con éxito. Hemos enviado un email a tu dirección de correo electrónico para validar la cuenta."
-            cancelText="Volver a la web"
-            onCancel={() => navigate("/")}
-          />
-        </Wrap>
-      </>
+      <Wrap>
+        <DialogModal
+          isOpen={true}
+          title="Cuenta creada"
+          text="Tu cuenta ha sido creada con éxito. Hemos enviado un email a tu dirección de correo electrónico para validar la cuenta."
+          cancelText="Volver a la web"
+          onCancel={() => Router.push("/")}
+        />
+      </Wrap>
     );
   }
 
@@ -354,7 +341,7 @@ const SignupPageWithMutation = props => {
   );
 };
 
-export default SignupPageWithMutation;
+export default withApollo(SignupPageWithMutation, { requiresSession: false });
 
 const FormInput = ({ field, form: { touched, errors }, ...props }) => {
   const showError = touched[field.name] && errors[field.name];

@@ -1,23 +1,23 @@
 import React, { FC } from "react";
 import styled from "@emotion/styled";
-import { Link } from "gatsby";
+import Link from "next/link";
 import { Button } from "@bitbloq/ui";
 import LoginForm from "./LoginForm";
 
-interface LoginPanelProps {
+interface ILoginPanelProps {
   className?: string;
   email: string;
   logingError: boolean;
   logingIn: boolean;
   password: string;
-  onLoginClick(): void;
-  secondaryButtonCallback(): void;
+  onLoginClick: () => any;
+  secondaryButtonCallback: () => any;
   secondaryButtonText: string;
   setEmail(email: string): void;
   setPassword(password: string): void;
 }
 
-const LoginPanel: FC<LoginPanelProps> = (props: LoginPanelProps) => {
+const LoginPanel: FC<ILoginPanelProps> = props => {
   const {
     className,
     email,
@@ -33,7 +33,7 @@ const LoginPanel: FC<LoginPanelProps> = (props: LoginPanelProps) => {
   return (
     <Panel
       className={className}
-      onSubmit={(event: Event) => event.preventDefault()}
+      onSubmit={(event: React.FormEvent) => event.preventDefault()}
     >
       <LoginForm
         email={email}
@@ -48,7 +48,9 @@ const LoginPanel: FC<LoginPanelProps> = (props: LoginPanelProps) => {
       <Button secondary onClick={secondaryButtonCallback}>
         {secondaryButtonText}
       </Button>
-      <Link to="/forgot-password">No recuerdo mi contraseña</Link>
+      <Link href="/forgot-password">
+        <a>No recuerdo mi contraseña</a>
+      </Link>
     </Panel>
   );
 };

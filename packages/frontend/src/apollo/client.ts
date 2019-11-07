@@ -8,17 +8,15 @@ import { createUploadLink } from "apollo-upload-client";
 import { WebSocketLink } from "apollo-link-ws";
 import { getMainDefinition } from "apollo-utilities";
 import { RENEW_TOKEN_MUTATION } from "./queries";
-import {
-  getToken,
-  setToken,
-  shouldRenewToken,
-  onSessionError
-} from "../lib/session";
 import { flags } from "../config";
 
 const { SHOW_GRAPHQL_LOGS } = flags;
 
-const request = async (operation, client) => {
+const request = async (
+  operation,
+  client,
+  { getToken, setToken, shouldRenewToken }
+) => {
   const context = operation.getContext();
 
   let authHeader = "";
@@ -27,16 +25,16 @@ const request = async (operation, client) => {
     const basicAuth = btoa(`${context.email}:${context.password}`);
     authHeader = `Basic ${basicAuth}`;
   } else {
-    let token = getToken(context.tempSession);
+    let token = getToken();
     if (
       token &&
       operation.operationName !== "Login" &&
       operation.operationName !== "RenewToken" &&
-      shouldRenewToken(context.tempSession)
+      shouldRenewToken()
     ) {
-      token = await renewToken(client, context.tempSession);
+      token = await renewToken(client);
       if (token) {
-        setToken(token, context.tempSession);
+        setToken(token);
       }
     }
 
@@ -50,11 +48,10 @@ const request = async (operation, client) => {
   });
 };
 
-const renewToken = async (client, tempSession) => {
+const renewToken = async client => {
   try {
     const { data, error } = await client.mutate({
-      mutation: RENEW_TOKEN_MUTATION,
-      context: { tempSession }
+      mutation: RENEW_TOKEN_MUTATION
     });
     return data.renewToken;
   } catch (e) {
@@ -65,12 +62,19 @@ const renewToken = async (client, tempSession) => {
   }
 };
 
+const isBrowser = typeof window !== "undefined";
+
 const httpLink = createUploadLink({
-  uri: "/api/graphql",
-  fetch
+  fetch,
+  uri: isBrowser
+    ? process.env.API_URL
+    : process.env.API_URL_SERVER || process.env.API_URL
 });
 
-export const createClient = isBrowser => {
+export const createClient = (
+  initialState,
+  { getToken, setToken, shouldRenewToken, onSessionError }
+) => {
   const client = new ApolloClient({
     link: ApolloLink.from([
       onError(({ graphQLErrors, networkError, operation }) => {
@@ -95,15 +99,18 @@ export const createClient = isBrowser => {
             );
           }
         }
-        if (networkError && SHOW_GRAPHQL_LOGS)
+        if (networkError && SHOW_GRAPHQL_LOGS) {
           console.log(`[Network error]: ${JSON.stringify(networkError)}`);
+        }
       }),
       new ApolloLink(
         (operation, forward) =>
           new Observable(observer => {
             let handle;
             Promise.resolve(operation)
-              .then(oper => request(oper, client))
+              .then(oper =>
+                request(oper, client, { getToken, setToken, shouldRenewToken })
+              )
               .then(() => {
                 handle = forward(operation).subscribe({
                   next: observer.next.bind(observer),
@@ -121,15 +128,14 @@ export const createClient = isBrowser => {
       isBrowser
         ? split(
             ({ query }) => {
-              const { kind, operation } = getMainDefinition(query);
+              const definition = getMainDefinition(query);
               return (
-                kind === "OperationDefinition" && operation === "subscription"
+                definition.kind === "OperationDefinition" &&
+                definition.operation === "subscription"
               );
             },
             new WebSocketLink({
-              uri: `${window.location.protocol === "https:" ? "wss" : "ws"}://${
-                window.location.host
-              }/api/graphql`,
+              uri: `${process.env.API_URL.replace("http", "ws")}`,
               options: {
                 lazy: true,
                 reconnect: true,
@@ -146,7 +152,7 @@ export const createClient = isBrowser => {
           )
         : httpLink
     ]),
-    cache: new InMemoryCache()
+    cache: new InMemoryCache().restore(initialState)
   });
 
   return client;

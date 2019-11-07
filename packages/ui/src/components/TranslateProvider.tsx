@@ -7,7 +7,8 @@ export const TranslateContext = React.createContext<TranslateFn>(
 );
 
 export interface TranslateProviderProps {
-  messagesFiles: any;
+  messages?: any;
+  messagesFiles?: any;
   fallback?: React.ReactNode;
 }
 
@@ -31,12 +32,15 @@ const findByString = function(object: any, selector: string) {
 };
 
 class TranslateProvider extends React.Component<TranslateProviderProps> {
-  readonly state = {
-    messages: null
-  };
+  constructor(props) {
+    super(props);
+    this.state = { messages: props.messages };
+  }
 
   componentDidMount() {
-    this.getLanguageMessages();
+    if (this.props.messagesFiles) {
+      this.getLanguageMessages();
+    }
   }
 
   async getLanguageMessages() {
@@ -71,7 +75,7 @@ class TranslateProvider extends React.Component<TranslateProviderProps> {
 
     return (
       <TranslateContext.Provider value={translateFn}>
-        {this.state.messages ? this.props.children : fallback}
+        {messages ? this.props.children : fallback}
       </TranslateContext.Provider>
     );
   }

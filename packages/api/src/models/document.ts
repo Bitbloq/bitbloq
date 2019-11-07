@@ -55,7 +55,7 @@ const DocumentMongSchema: Schema = new Schema({
   },
 
   image: {
-    image: { type: String, default: "imageURL" },
+    image: { type: String, default: "" },
     isSnapshot: {
       type: Boolean,
       default: true

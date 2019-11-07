@@ -11,4 +11,3 @@ const SvgLogo3D = props => (
 );
 
 export default SvgLogo3D;
-

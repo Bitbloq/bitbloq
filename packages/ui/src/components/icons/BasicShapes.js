@@ -11,4 +11,3 @@ const SvgBasicShapes = props => (
 );
 
 export default SvgBasicShapes;
-

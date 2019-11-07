@@ -1,4 +1,4 @@
-import { IHeaderButton, HeaderButtonClickCallback } from "@bitbloq/ui";
+import { IHeaderButton } from "@bitbloq/ui";
 
 export interface EditorProps {
   content: any;
@@ -7,22 +7,22 @@ export interface EditorProps {
   onTabChange: (index: number) => any;
   getTabs: (mainTabs: any) => any;
   title: string;
-  canEditTitle?: boolean;
   onEditTitle?: () => any;
   onSaveDocument?: () => any;
   brandColor: string;
   headerButtons?: IHeaderButton[];
-  onHeaderButtonClick?: HeaderButtonClickCallback;
+  onHeaderButtonClick?: (id: string) => any;
   isPlayground?: boolean;
-  headerRightContent?: JSX.Element;
-  preMenuContent?: JSX.Element;
-  changeAdvancedMode?(mode: boolean): void;
+  headerRightContent?: React.ReactChild;
+  preMenuContent?: React.ReactChild;
+  changeAdvancedMode?: (mode: boolean) => any;
   documentAdvancedMode?: boolean;
-  backCallback?():void;
+  backCallback?: () => any;
+  t?: (id: string) => string;
 }
 
 export interface Document {
   title: string;
   description: string;
-  image: string;
+  image: any;
 }

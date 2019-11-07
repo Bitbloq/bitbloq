@@ -272,5 +272,8 @@
     "mm": "mm",
     "peaks": "puntas",
     "sides": "caras"
+  },
+  "documents": {
+    "go-to-exercise": "Ir al ejercicio"
   }
 }

@@ -53,10 +53,7 @@ const ExerciseInfo: React.FunctionComponent<ExerciseInfoProps> = ({
             <p>{description}</p>
           </TabContent>
         )}
-        {currentTab === TabType.Score && (
-          <TabContent>
-          </TabContent>
-        )}
+        {currentTab === TabType.Score && <TabContent></TabContent>}
         <GotoExercise>
           <Button onClick={onGotoExercise}>Ir al ejercicio</Button>
         </GotoExercise>

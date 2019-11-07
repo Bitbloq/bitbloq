@@ -46,4 +46,3 @@ const SvgTimes = props => (
 );
 
 export default SvgTimes;
-

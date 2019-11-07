@@ -11,4 +11,3 @@ const SvgImportStl = props => (
 );
 
 export default SvgImportStl;
-

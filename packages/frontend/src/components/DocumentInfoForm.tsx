@@ -26,10 +26,13 @@ const DocumentInfoForm: FC<DocumentInfoFormProps> = ({
   const [imageError, setImageError] = useState("");
   const [titleInput, setTitle] = useState(title);
   const [titleError, setTitleError] = useState(false);
+  const [titleFocused, setTitleFocused] = useState(false);
 
   useEffect(() => {
-    setTitle(title);
-  });
+    if (!titleFocused) {
+      setTitle(title);
+    }
+  }, [title, titleFocused]);
 
   const onFileSelected = (file: File) => {
     if (file.type.indexOf("image/") !== 0) {
@@ -78,6 +81,8 @@ const DocumentInfoForm: FC<DocumentInfoFormProps> = ({
                   setTitle(value);
                 }}
                 error={titleError}
+                onFocus={() => setTitleFocused(true)}
+                onBlur={() => setTitleFocused(false)}
               />
             </FormInput>
           </FormRow>

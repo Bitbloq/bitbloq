@@ -1,12 +1,12 @@
-FROM node:current as node
+FROM node:12.13.0
 
 RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app/
 
 COPY . ./
 
-RUN npx lerna bootstrap
+RUN yarn install
 
 WORKDIR /usr/src/app/packages/frontend
 
-CMD npm run develop
+CMD yarn run dev

@@ -34,10 +34,10 @@ const flagFields = [
 ];
 
 const konamiCode = "38384040373937396665";
-const commit = process.env.GATSBY_COMMIT;
-const commitDate = process.env.GATSBY_COMMIT_DATE;
-const buildDate = process.env.GATSBY_BUILD_DATE; 
-const branch = process.env.GATSBY_BRANCH;
+const commit = process.env.COMMIT;
+const commitDate = process.env.COMMIT_DATE;
+const buildDate = process.env.BUILD_DATE;
+const branch = process.env.BRANCH;
 
 const FlagsModal: FC = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -97,20 +97,24 @@ const FlagsModal: FC = () => {
               />
             )}
           </FormGroup>
-        ))
-        }
+        ))}
         <Buttons>
-          <Button onClick={() => setIsOpen(false)} tertiary>Cerrar</Button>
+          <Button onClick={() => setIsOpen(false)} tertiary>
+            Cerrar
+          </Button>
           <Button onClick={onSaveClick}>Guardar y recargar</Button>
         </Buttons>
-        <br/>
+        <br />
         <HorizontalRule small />
         <VersionInfo>
-        <b>Last commit:</b> {commit}{"  "}@{" "}<b>{branch}</b><br/> 
-        <b>Commit date:</b> {commitDate} GMT<br/>
-        <b>Build date:</b> {buildDate} GMT<br/>
+          <b>Last commit:</b> {commit}
+          {"  "}@ <b>{branch}</b>
+          <br />
+          <b>Commit date:</b> {commitDate} GMT
+          <br />
+          <b>Build date:</b> {buildDate} GMT
+          <br />
         </VersionInfo>
-
       </Content>
     </Modal>
   );

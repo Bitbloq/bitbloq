@@ -1,12 +1,12 @@
 import * as React from "react";
-import Button from "./Button";
+import Button, { ButtonProps } from "./Button";
 
 export interface FileSelectButtonProps {
   onFileSelected: (file: File) => void;
 }
 
 class FileSelectButton extends React.Component<
-  FileSelectButtonProps & React.HTMLProps<HTMLButtonElement>
+  FileSelectButtonProps & ButtonProps & React.HTMLProps<HTMLButtonElement>
 > {
   input = React.createRef<HTMLInputElement>();
 

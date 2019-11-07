@@ -14,4 +14,3 @@ const SvgBrain = props => (
 );
 
 export default SvgBrain;
-

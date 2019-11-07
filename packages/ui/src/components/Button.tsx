@@ -2,7 +2,7 @@ import styled from "@emotion/styled";
 import { css } from "@emotion/core";
 import colors from "../colors";
 
-interface ButtonProps {
+export interface ButtonProps {
   small?: boolean;
   secondary?: boolean;
   tertiary?: boolean;

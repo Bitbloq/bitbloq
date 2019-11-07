@@ -1,0 +1,19 @@
+{
+  "extends": ["tslint:latest", "tslint-config-prettier"],
+  "linterOptions": {
+    "exclude": [
+      "packages/*/node_modules/**/*",
+      "packages/*/src/__tests__/**/*",
+      "packages/lib3d/src/threeCSG.ts",
+      "packages/lib3d/src/Renderer.ts"
+    ]
+  },
+  "rules": {
+    "variable-name": [true, "check-format", "allow-leading-underscore"],
+    "ordered-imports": false,
+    "object-literal-sort-keys": false,
+    "no-any": false,
+    "no-unsafe-any": true,
+    "no-require-imports": false
+  }
+}

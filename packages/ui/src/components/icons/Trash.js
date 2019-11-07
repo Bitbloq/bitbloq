@@ -11,4 +11,3 @@ const SvgEliminate = props => (
 );
 
 export default SvgEliminate;
-

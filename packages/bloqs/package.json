@@ -29,10 +29,6 @@
   },
   "scripts": {
     "coveralls": "echo \"not defined\"",
-    "tslint:dev": "tslint --project tsconfig.json -c ./tslint-dev.json \"**/*.ts\"",
-    "tslint:prod": "tslint --project tsconfig.json -c ./tslint-prod.json \"**/*.ts\"",
-    "prettier": "prettier \"**/*.{ts,js,tsx,jsx,json,md,scss,yml}\"",
-    "prettier:ts": "prettier --write \"**/*.{ts,tsx}\"",
     "test": "echo \"not defined\"",
     "test:debug": "node --inspect node_modules/.bin/jest --watch --runInBand"
   },
@@ -54,12 +50,8 @@
     "babel-loader": "^8.0.5",
     "html-webpack-plugin": "^3.2.0",
     "jest": "^24.7.1",
-    "prettier": "^1.16.4",
     "source-map-loader": "^0.2.4",
     "ts-jest": "^24.0.1",
-    "tslint": "^5.15.0",
-    "tslint-config-airbnb": "^5.11.1",
-    "tslint-config-prettier": "^1.18.0",
     "typescript": "^3.4.1",
     "webpack": "^4.29.6",
     "webpack-cli": "^3.3.0",

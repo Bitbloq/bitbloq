@@ -11,4 +11,3 @@ const SvgPrograming2 = props => (
 );
 
 export default SvgPrograming2;
-

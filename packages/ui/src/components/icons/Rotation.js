@@ -11,4 +11,3 @@ const SvgRotation = props => (
 );
 
 export default SvgRotation;
-

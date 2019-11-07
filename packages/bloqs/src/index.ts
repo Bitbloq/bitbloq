@@ -169,7 +169,7 @@ export enum ConnectorPinMode {
 export interface IConnectorPin {
   name: string;
   mode: ConnectorPinMode;
-  portPin: string;
+  portPin?: string;
 }
 
 export interface IConnector {
@@ -183,7 +183,7 @@ export interface IComponentAction {
   name: string;
   parameters: string[];
   code: string;
-  returns?: string;
+  return?: string;
 }
 
 export interface IBloqAction {

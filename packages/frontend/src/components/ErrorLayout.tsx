@@ -1,6 +1,6 @@
 import React, { FC } from "react";
 import styled from "@emotion/styled";
-import { navigate } from "gatsby";
+import Router from "next/router";
 import { Button, colors } from "@bitbloq/ui";
 import logoBetaImage from "../images/logo-beta.svg";
 
@@ -38,7 +38,7 @@ const ErrorLayout: FC<ErrorLayoutProps> = ({
 
 ErrorLayout.defaultProps = {
   okText: "Volver al inicio",
-  onOk: () => navigate("/")
+  onOk: () => Router.push("/")
 };
 
 export default ErrorLayout;

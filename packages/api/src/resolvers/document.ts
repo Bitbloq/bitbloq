@@ -15,7 +15,7 @@ import { getParentsPath, orderFunctions } from "../utils";
 
 export const DOCUMENT_UPDATED: string = "DOCUMENT_UPDATED";
 
-const hasDocsWithEx = async (folder: any) => {
+const hasDocsWithEx = async (folder: IFolder): Promise<boolean> => {
   if (folder.documentsID && folder.documentsID.length > 0) {
     const docsEx = await ExerciseModel.find({
       document: { $in: folder.documentsID }
@@ -338,28 +338,26 @@ const documentResolver = {
       const filterOptionsDoc =
         text === ""
           ? {
-              title: { $regex: `.*${text}.*`, $options: "i" },
-              user: context.user.userID,
               folder: currentLocation
             }
-          : {
-              title: { $regex: `.*${text}.*`, $options: "i" },
-              user: context.user.userID
-            };
+          : {};
       const filterOptionsFol =
         text === ""
           ? {
-              name: { $regex: `.*${text}.*`, $options: "i" },
-              user: context.user.userID,
               parent: currentLocation
             }
-          : {
-              name: { $regex: `.*${text}.*`, $options: "i" },
-              user: context.user.userID
-            };
+          : {};
 
-      const docs: IDocument[] = await DocumentModel.find(filterOptionsDoc);
-      const fols: IFolder[] = await FolderModel.find(filterOptionsFol);
+      const docs: IDocument[] = await DocumentModel.find({
+        title: { $regex: `.*${text}.*`, $options: "i" },
+        user: context.user.userID,
+        ...filterOptionsDoc
+      });
+      const fols: IFolder[] = await FolderModel.find({
+        name: { $regex: `.*${text}.*`, $options: "i" },
+        user: context.user.userID,
+        ...filterOptionsFol
+      });
 
       const docsParent = await Promise.all(
         docs.map(
@@ -373,8 +371,6 @@ const documentResolver = {
             image,
             ...op
           }) => {
-            let hasChildren: boolean =
-              (await ExerciseModel.find({ document: id })).length > 0;
             return {
               title,
               id,
@@ -383,7 +379,6 @@ const documentResolver = {
               type,
               parent,
               image: image.image,
-              hasChildren,
               ...op
             };
           }
@@ -401,10 +396,6 @@ const documentResolver = {
             foldersID,
             ...op
           }) => {
-            const hasChildren: boolean = await hasDocsWithEx({
-              documentsID,
-              foldersID
-            });
             return {
               title,
               id,
@@ -412,7 +403,6 @@ const documentResolver = {
               updatedAt,
               type: "folder",
               parent,
-              hasChildren,
               ...op
             };
           }
@@ -440,6 +430,24 @@ const documentResolver = {
         nFolders,
         parentsPath
       };
+    },
+
+    hasExercises: async (root: any, args: any, context: any) => {
+      let hasChildren: boolean;
+      if (args.type === "folder") {
+        const fol: IFolder = await FolderModel.findOne({
+          _id: args.id,
+          user: context.user.userID
+        });
+        hasChildren = await hasDocsWithEx(fol);
+      } else {
+        hasChildren =
+          (await ExerciseModel.find({
+            document: args.id,
+            user: context.user.userID
+          })).length > 0;
+      }
+      return hasChildren;
     }
   },
 

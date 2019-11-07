@@ -101,4 +101,3 @@ const SvgBulbColor = ({ isOn, color, ...props }) => (
 );
 
 export default SvgBulbColor;
-

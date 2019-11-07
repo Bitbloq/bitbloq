@@ -3,6 +3,7 @@ import styled from "@emotion/styled";
 import { colors } from "@bitbloq/ui";
 import { css } from "@emotion/core";
 import logoBetaImage from "../images/logo-beta.svg";
+import Layout from "./Layout";
 
 export interface IAppHeaderProps {
   isSticky?: boolean;
@@ -11,8 +12,12 @@ export interface IAppHeaderProps {
 const AppHeader: FC<IAppHeaderProps> = ({ children, isSticky }) => {
   return (
     <Container isSticky={isSticky}>
-      <Logo isSticky={isSticky} src={logoBetaImage} alt="Bitbloq" />
-      {children}
+      <Layout>
+        <Header isSticky={isSticky}>
+          <Logo isSticky={isSticky} src={logoBetaImage} alt="Bitbloq" />
+          <Content>{children}</Content>
+        </Header>
+      </Layout>
     </Container>
   );
 };
@@ -24,12 +29,6 @@ export default AppHeader;
 const Container = styled.div<IAppHeaderProps>`
   background-color: white;
   border-bottom: 1px solid ${colors.gray3};
-  display: flex;
-  min-height: ${props =>
-    props.isSticky !== undefined && !props.isSticky ? "80" : "60"}px;
-  padding: 0px 50px;
-  align-items: center;
-  justify-content: space-between;
   transition: min-height 0.3s ease-out;
 
   ${props =>
@@ -47,8 +46,25 @@ const Container = styled.div<IAppHeaderProps>`
         `};
 `;
 
+const Content = styled.div`
+  align-items: center;
+  display: flex;
+  > * {
+    margin-left: 10px;
+  }
+`;
+
+const Header = styled.div<IAppHeaderProps>`
+  display: flex;
+  justify-content: space-between;
+  min-height: ${props =>
+    props.isSticky !== undefined && !props.isSticky ? "80" : "60"}px;
+  transition: min-height 0.3s ease-out;
+`;
+
 const Logo = styled.img<IAppHeaderProps>`
   height: ${props =>
     props.isSticky === undefined || props.isSticky ? "30" : "40"}px;
+  transform: translateY(50%);
   transition: height 100ms ease-out;
 `;

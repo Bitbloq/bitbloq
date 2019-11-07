@@ -11,4 +11,3 @@ const SvgTick = props => (
 );
 
 export default SvgTick;
-

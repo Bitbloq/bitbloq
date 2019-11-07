@@ -51,17 +51,19 @@ export interface IThreeDProps {
   tabIndex: number;
   onTabChange: (tabIndex: number) => any;
   headerButtons?: IHeaderButton[];
-  headerRightContent?: React.ReactChildren;
+  headerRightContent?: React.ReactChild;
   onHeaderButtonClick?: (id: string) => any;
   addShapeGroups: (base: IShapeGroup[]) => IShapeGroup[];
   menuOptions: (base: MainMenuOption[]) => MainMenuOption[];
-  preMenuContent: JSX.Element;
-  postMenuContent: JSX.Element;
+  preMenuContent?: React.ReactChild;
+  postMenuContent?: React.ReactChild;
   backCallback: () => any;
   documentAdvancedMode: boolean;
   changeAdvancedMode: (advancedMode: boolean) => any;
   onContentChange: (content: IObjectsCommonJSON[]) => any;
   threeDRef?: { current: IThreeDRef | null };
+  brandColor: string;
+  children: any;
 }
 
 const ThreeD: React.FC<IThreeDProps> = ({
@@ -83,7 +85,8 @@ const ThreeD: React.FC<IThreeDProps> = ({
   documentAdvancedMode,
   changeAdvancedMode,
   onContentChange,
-  threeDRef
+  threeDRef,
+  brandColor
 }) => {
   const sceneRef = useRef<Scene | null>(null);
   const initialObjectsRef = useRef<IObjectsCommonJSON[]>([]);
@@ -458,6 +461,7 @@ const ThreeD: React.FC<IThreeDProps> = ({
 
   return (
     <Document
+      brandColor={brandColor}
       title={title || t("untitled-project")}
       icon={<Icon name="logo-3d" />}
       tabIndex={tabIndex}

@@ -12,14 +12,14 @@ export const boards: IBoard[] = [
         pins: {
           PinRed: "7",
           PinGreen: "8",
-          PinBlue: "2",
+          PinBlue: "2"
         }
       },
       {
         component: "Buzzer",
         name: "zumJuniorBuzzer",
         pins: {
-          Pin: "4",
+          Pin: "4"
         }
       }
     ],
@@ -35,7 +35,7 @@ export const boards: IBoard[] = [
     },
     schematicCenter: {
       x: 0,
-      y: -0.23,
+      y: -0.23
     },
     ports: [
       {

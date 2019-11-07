@@ -10,7 +10,7 @@ import SliderImage from "../../images/hardware/zumjunior-slider.svg";
 import BuzzerImage from "../../images/hardware/buzzer.svg";
 import RGBLedImage from "../../images/hardware/RGBled.svg";
 
-export const components: Partial<IComponent>[] = [
+export const components: Array<Partial<IComponent>> = [
   {
     name: "Component",
     code: {
@@ -40,7 +40,7 @@ export const components: Partial<IComponent>[] = [
         name: "read",
         parameters: ["pinVarName"],
         code: "digitalRead({{pinVarName}})",
-        returns: "uint8_t"
+        return: "uint8_t"
       }
     ]
   },

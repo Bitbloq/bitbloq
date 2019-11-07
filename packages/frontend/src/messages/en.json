@@ -266,5 +266,8 @@
     "mm": "mm",
     "peaks": "peaks",
     "sides": "sides"
+  },
+  "documents": {
+    "go-to-exercise": "Go to exercise"
   }
 }

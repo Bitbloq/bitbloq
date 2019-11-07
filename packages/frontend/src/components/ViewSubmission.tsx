@@ -1,9 +1,9 @@
 import * as React from "react";
 import styled from "@emotion/styled";
 import { Query } from "react-apollo";
-import { ThreeD } from "@bitbloq/3d";
 import { colors, Spinner } from "@bitbloq/ui";
 import GraphQLErrorMessage from "./GraphQLErrorMessage";
+import { documentTypes } from "../config";
 import gql from "graphql-tag";
 
 const SUBMISSION_QUERY = gql`
@@ -16,9 +16,31 @@ const SUBMISSION_QUERY = gql`
   }
 `;
 
-class ThreeDSubmission extends React.Component {
+interface IViewSubmissionProps {
+  id: string;
+  type: string;
+}
+
+interface IViewSubmissionState {
+  tabIndex: number;
+}
+
+class ViewSubmission extends React.Component<
+  IViewSubmissionProps,
+  IViewSubmissionState
+> {
+  constructor(props) {
+    super(props);
+
+    this.state = { tabIndex: 0 };
+  }
+
   render() {
-    const { id } = this.props;
+    const { id, type } = this.props;
+    const { tabIndex } = this.state;
+
+    const documentType = documentTypes[type];
+    const EditorComponent = documentType.editorComponent;
 
     return (
       <Query query={SUBMISSION_QUERY} variables={{ id }}>
@@ -31,7 +53,7 @@ class ThreeDSubmission extends React.Component {
           if (loading) return <Loading />;
 
           const { submission } = data;
-          const { title, studentNick } = submission;
+          const { title, studentNick, type } = submission;
           let content = [];
           try {
             content = JSON.parse(submission.content);
@@ -40,9 +62,14 @@ class ThreeDSubmission extends React.Component {
           }
 
           return (
-            <ThreeD
-              initialContent={content}
+            <EditorComponent
+              brandColor={documentType.color}
+              content={content}
+              tabIndex={tabIndex}
+              onTabChange={(tab: number) => this.setState({ tabIndex: tab })}
+              getTabs={(mainTabs: any[]) => mainTabs}
               title={`${title} (${studentNick})`}
+              onContentChange={() => null}
             />
           );
         }}
@@ -51,7 +78,7 @@ class ThreeDSubmission extends React.Component {
   }
 }
 
-export default ThreeDSubmission;
+export default ViewSubmission;
 
 /* styled components */
 

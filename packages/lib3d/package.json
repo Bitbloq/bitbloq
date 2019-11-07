@@ -31,9 +31,7 @@
     "test:debug": "node --inspect node_modules/.bin/jest --watch --runInBand",
     "coveralls": "jest --coverage && cat ./coverage/lcov.info | coveralls",
     "tslint:dev": "tslint -c ./tslint-dev.json \"**/*.ts\"",
-    "tslint:prod": "tslint -c ./tslint-prod.json \"**/*.ts\"",
-    "prettier": "prettier \"**/*.{ts,js,tsx,jsx,json,md,scss,yml}\"",
-    "prettier:ts": "prettier --write \"**/*.{ts,tsx}\""
+    "tslint:prod": "tslint -c ./tslint-prod.json \"**/*.ts\""
   },
   "bugs": {
     "url": "git+https://github.com/bitbloq/bitbloq/issues"
@@ -59,12 +57,8 @@
     "jest": "^23.6.0",
     "jest-fetch-mock": "^2.1.0",
     "jsdom-worker": "^0.1.0",
-    "prettier": "^1.16.4",
-    "prettier-tslint": "^0.4.1",
     "ts-jest": "^23.10.5",
     "tslint": "^5.11.0",
-    "tslint-config-airbnb": "^5.11.1",
-    "tslint-config-prettier": "^1.17.0",
     "tsutils": "^3.8.0",
     "typescript": "^3.5.3",
     "webpack": "^4.29.3",

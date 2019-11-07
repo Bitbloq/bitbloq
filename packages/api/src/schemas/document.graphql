@@ -15,7 +15,8 @@ type Query {
     itemsPerPage: Number
     order: String
     searchTitle: String
-  ): DocsAndFolders
+  ): DocsAndFolders @authRequired(requires: [USER])
+  hasExercises(id: ObjectID!, type: String): Boolean @authRequired(requires: [USER])
   openPublicDocument(id: ObjectID!): Document # @authRequired(requires: [BASIC])
   examples: [Document]
 }
@@ -59,7 +60,6 @@ type Result {
   createdAt: Date
   updatedAt: Date
   parent: ObjectID
-  hasChildren: Boolean
 }
 
 type Document {

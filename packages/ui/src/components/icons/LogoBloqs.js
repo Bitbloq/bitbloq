@@ -11,4 +11,3 @@ const SvgLogoEvents = props => (
 );
 
 export default SvgLogoEvents;
-

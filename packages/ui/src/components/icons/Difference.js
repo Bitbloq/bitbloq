@@ -11,4 +11,3 @@ const SvgDifference = props => (
 );
 
 export default SvgDifference;
-

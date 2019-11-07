@@ -69,10 +69,7 @@ const LandingExamples: FC = () => {
 export default LandingExamples;
 
 const Container = styled.div`
-  max-width: 1280px;
-  box-sizing: border-box;
-  margin: 0 auto;
-  padding: 80px 50px;
+  padding: 80px 0;
 
   h2 {
     display: flex;

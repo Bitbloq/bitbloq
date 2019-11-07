@@ -73,4 +73,3 @@ const SvgWheel = props => (
 );
 
 export default SvgWheel;
-

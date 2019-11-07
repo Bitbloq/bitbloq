@@ -11,4 +11,3 @@ const SvgPerspective = props => (
 );
 
 export default SvgPerspective;
-

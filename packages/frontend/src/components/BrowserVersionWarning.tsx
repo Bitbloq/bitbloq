@@ -1,13 +1,13 @@
-import * as React from "react";
+import React from "react";
 import styled from "@emotion/styled";
 import { colors } from "@bitbloq/ui";
 
-interface BrowserVersionWarningProps {
+interface IBrowserVersionWarningProps {
   version: number;
-  color: string;
+  color?: string;
 }
 
-const BrowserVersionWarning: React.SFC<BrowserVersionWarningProps> = ({
+const BrowserVersionWarning: React.SFC<IBrowserVersionWarningProps> = ({
   version,
   color
 }) => (
@@ -16,10 +16,9 @@ const BrowserVersionWarning: React.SFC<BrowserVersionWarningProps> = ({
       <h2>Aviso</h2>
       <p>
         Hemos detectado que el navegador que estas utilizando no es compatible
-        con Bitbloq. Para hacer un uso
-        optimo de la herramienta, asegúrate de utilizar{" "}
-        <b>Google Chrome con la versión {version} o superior</b>. Puedes
-        descargarlo haciendo clic en{" "}
+        con Bitbloq. Para hacer un uso optimo de la herramienta, asegúrate de
+        utilizar <b>Google Chrome con la versión {version} o superior</b>.
+        Puedes descargarlo haciendo clic en{" "}
         <a href="https://www.google.com/chrome/">este enlace</a>.
       </p>
     </WarningModal>
@@ -30,10 +29,10 @@ export default BrowserVersionWarning;
 
 /* styled components */
 
-interface WarningScreenProps {
-  color: string;
+interface IWarningScreenProps {
+  color?: string;
 }
-const WarningScreen = styled.div<WarningScreenProps>`
+const WarningScreen = styled.div<IWarningScreenProps>`
   position: absolute;
   top: 0px;
   left: 0px;

@@ -1,7 +1,7 @@
 import { ApolloError, AuthenticationError } from "apollo-server-koa";
 import { contextController } from "../controllers/context";
 import { mailerController } from "../controllers/mailer";
-import { DocumentModel } from "../models/document";
+import { DocumentModel, IDocument } from "../models/document";
 import { ExerciseModel } from "../models/exercise";
 import { FolderModel, IFolder } from "../models/folder";
 import { SubmissionModel } from "../models/submission";
@@ -117,11 +117,39 @@ const userResolver = {
         const { token, role } = await contextController.generateLoginToken(
           contactFound
         );
+        if (!contactFound.rootFolder) {
+          const userDocs: IDocument[] = await DocumentModel.find({
+            user: contactFound._id
+          });
+          const userFols: IFolder[] = await FolderModel.find({
+            user: contactFound._id
+          });
+          const userFolder: IFolder = await FolderModel.create({
+            name: "root",
+            user: contactFound._id,
+            documentsID: userDocs.map(i => i._id),
+            foldersID: userFols.map(i => i._id)
+          });
+          await DocumentModel.updateMany(
+            { user: contactFound._id },
+            { $set: { folder: userFolder._id } }
+          );
+          await FolderModel.updateMany(
+            { user: contactFound._id, name: { $ne: "root" } },
+            { $set: { parent: userFolder._id } }
+          );
+          await UserModel.updateOne(
+            { _id: contactFound._id },
+            { $set: { rootFolder: userFolder._id } },
+            { new: true }
+          );
+        }
 
         // Update the user information in the database
         await UserModel.updateOne(
           { _id: contactFound._id },
-          { $set: { authToken: token, lastLogin: new Date() } }
+          { $set: { authToken: token, lastLogin: new Date() } },
+          { new: true }
         );
         await storeTokenInRedis(`authToken-${contactFound._id}`, token);
         return token;

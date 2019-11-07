@@ -1,10 +1,9 @@
 import React, { FC, useCallback, useEffect, useRef, useState } from "react";
+import Router from "next/router";
 import styled from "@emotion/styled";
 import { saveAs } from "file-saver";
-import html2canvas from "html2canvas";
 import { useQuery, useMutation } from "@apollo/react-hooks";
 import { Document, Icon, Spinner, useTranslate } from "@bitbloq/ui";
-import { navigate } from "gatsby";
 import useUserData from "../lib/useUserData";
 import DocumentInfoForm from "./DocumentInfoForm";
 import EditTitleModal from "./EditTitleModal";
@@ -33,6 +32,12 @@ interface EditDocumentProps {
   id: string;
   type: string;
 }
+
+let html2canvas;
+if (typeof window !== undefined) {
+  import("html2canvas").then(module => (html2canvas = module.default));
+}
+
 const EditDocument: FC<EditDocumentProps> = ({ folder, id, type }) => {
   const t = useTranslate();
 
@@ -43,7 +48,6 @@ const EditDocument: FC<EditDocumentProps> = ({ folder, id, type }) => {
   const [isEditTitleVisible, setIsEditTitleVisible] = useState(false);
   const [tabIndex, setTabIndex] = useState(0);
   const [loading, setLoading] = useState(true);
-  const [, setImageInterval] = useState<number>();
   const [firstLoad, setFirstLoad] = useState(true);
   const [error, setError] = useState(null);
   const [document, setDocument] = useState({
@@ -57,7 +61,7 @@ const EditDocument: FC<EditDocumentProps> = ({ folder, id, type }) => {
     advancedMode: false
   });
   const [image, setImage] = useState<DocumentImage>();
-  const imageToUpload = useRef(new Blob());
+  const imageToUpload = useRef<Blob | null>(null);
 
   const {
     loading: loadingDocument,
@@ -70,6 +74,7 @@ const EditDocument: FC<EditDocumentProps> = ({ folder, id, type }) => {
   });
 
   useEffect(() => {
+    imageToUpload.current;
     if (firstLoad) {
       saveImage();
       if (
@@ -82,8 +87,7 @@ const EditDocument: FC<EditDocumentProps> = ({ folder, id, type }) => {
       ) {
         updateImage(document.id);
         setFirstLoad(false);
-        const interval = setInterval(updateImage, 10 * 60 * 1000, document.id);
-        setImageInterval(interval);
+        setInterval(updateImage, 10 * 60 * 1000, document.id);
       }
     }
   }, [imageToUpload.current]);
@@ -113,7 +117,7 @@ const EditDocument: FC<EditDocumentProps> = ({ folder, id, type }) => {
       const picture: HTMLElement | null = window.document.querySelector(
         ".image-snapshot"
       );
-      if (picture) {
+      if (picture && html2canvas) {
         const canvas: HTMLCanvasElement = await html2canvas(picture);
         const imgData: string = canvas.toDataURL("image/jpeg");
 
@@ -134,9 +138,7 @@ const EditDocument: FC<EditDocumentProps> = ({ folder, id, type }) => {
     const isSnapshot = isImageSnapshot === undefined ? true : isImageSnapshot;
     setImage({ image: "udpated", isSnapshot });
 
-    if (!isSnapshot) {
-      setImageInterval(undefined);
-    } else {
+    if (isSnapshot) {
       setImage({ image: "blob", isSnapshot: true });
     }
 
@@ -193,11 +195,7 @@ const EditDocument: FC<EditDocumentProps> = ({ folder, id, type }) => {
   const update = async (document: any) => {
     setDocument(document);
     if (isNew) {
-      const {
-        data: {
-          createDocument: { id: newId }
-        }
-      } = await createDocument({
+      const result = await createDocument({
         variables: {
           ...document,
           folder: folder,
@@ -206,7 +204,16 @@ const EditDocument: FC<EditDocumentProps> = ({ folder, id, type }) => {
       }).catch(e => {
         return setError(e);
       });
-      navigate(`/app/document/${folder}/${type}/${newId}`, { replace: true });
+      if (result) {
+        const {
+          data: {
+            createDocument: { id: newId }
+          }
+        } = result;
+        const href = "/app/edit-document/[folder]/[type]/[id]";
+        const as = `/app/edit-document/${folder}/${type}/${newId}`;
+        Router.replace(href, as, { shallow: true });
+      }
     } else {
       debouncedUpdate(document);
     }
@@ -233,7 +240,7 @@ const EditDocument: FC<EditDocumentProps> = ({ folder, id, type }) => {
   }, []);
 
   if (loading) return <Loading color={documentType.color} />;
-  if (error) return <GraphQLErrorMessage apolloError={error} />;
+  if (error) return <GraphQLErrorMessage apolloError={error!} />;
 
   const {
     title,
@@ -326,7 +333,7 @@ const EditDocument: FC<EditDocumentProps> = ({ folder, id, type }) => {
 
   const headerRightContent: JSX.Element = (
     <HeaderRightContent>
-      <UserInfo name={user.name} />
+      <UserInfo name={user && user.name} />
     </HeaderRightContent>
   );
 
@@ -334,7 +341,6 @@ const EditDocument: FC<EditDocumentProps> = ({ folder, id, type }) => {
     <>
       <EditorComponent
         brandColor={documentType.color}
-        canEditTitle={true}
         content={content}
         tabIndex={tabIndex}
         onTabChange={onTabChange}
@@ -356,7 +362,7 @@ const EditDocument: FC<EditDocumentProps> = ({ folder, id, type }) => {
         changeAdvancedMode={onSetAdvancedMode}
         documentAdvancedMode={advancedMode}
         headerRightContent={headerRightContent}
-        backCallback={() => navigate("/")}
+        backCallback={() => Router.push("/")}
       />
       {isEditTitleVisible && (
         <EditTitleModal

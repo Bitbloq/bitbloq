@@ -11,4 +11,3 @@ const SvgCurveAngle = props => (
 );
 
 export default SvgCurveAngle;
-

@@ -11,4 +11,3 @@ const SvgAngleDouble = props => (
 );
 
 export default SvgAngleDouble;
-

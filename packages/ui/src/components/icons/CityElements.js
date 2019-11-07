@@ -11,4 +11,3 @@ const SvgCityElements = props => (
 );
 
 export default SvgCityElements;
-
