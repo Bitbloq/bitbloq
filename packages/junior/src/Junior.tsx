@@ -34,7 +34,7 @@ export interface IJuniorCallbackProps {
   reset: () => void;
   canUndo: boolean;
   canRedo: boolean;
-  solution: { hardware: IHardware; program: IBloqLine[] };
+  content: any;
 }
 
 export interface IJuniorProps {
@@ -234,14 +234,14 @@ const Junior: React.FunctionComponent<IJuniorProps> = ({
           {!externalUpload && uploadContent}
         </>
       ) : null,
-    solution: { hardware, program },
     upload: onUpload,
     cancel,
     undo,
     redo,
     reset,
     canUndo: undoPast.length > 0,
-    canRedo: undoFuture.length > 0
+    canRedo: undoFuture.length > 0,
+    content
   });
 };
 
