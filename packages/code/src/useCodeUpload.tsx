@@ -60,6 +60,60 @@ class Uploader {
           ]
         };
       }
+      // TODO: Temporal patch of open and set methods.
+      // Remove when these changes land in avrgirl
+      connection.serialPort.open = function(callback) {
+        (window.navigator as any).serial
+          .requestPort(this.requestOptions)
+          .then(serialPort => {
+            this.port = serialPort;
+            if (this.isOpen) return;
+            return this.port.open({
+              baudrate: this.baudrate || 57600,
+              baudRate: this.baudrate || 57600
+            });
+          })
+          .then(() => (this.writer = this.port.writable.getWriter()))
+          .then(() => (this.reader = this.port.readable.getReader()))
+          .then(async () => {
+            this.emit("open");
+            this.isOpen = true;
+            callback(null);
+            while (this.port.readable.locked) {
+              try {
+                const { value, done } = await this.reader.read();
+                if (done) {
+                  break;
+                }
+                this.emit("data", Buffer.from(value));
+              } catch (e) {
+                console.error(e);
+              }
+            }
+          })
+          .catch(error => {
+            callback(error);
+          });
+      };
+      connection.serialPort.set = async function(props, callback) {
+        try {
+          await this.port.setSignals(
+            Object.assign(
+              {
+                dataTerminalReady: props.dtr,
+                requestToSend: props.rts,
+                break: props.brk
+              },
+              props
+            )
+          );
+        } catch (error) {
+          if (callback) return callback(error);
+          throw error;
+        }
+        if (callback) return callback(null);
+      };
+
       connection.serialPort.open(error => {
         if (error) {
           serialPortError = error;
