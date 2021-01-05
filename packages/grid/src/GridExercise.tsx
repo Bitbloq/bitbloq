@@ -362,7 +362,7 @@ const Content = styled.div`
 const StyledBloqsLine = styled(BloqsLine)`
   flex: unset;
   margin: 0 10px;
-  min-height: 103px;
+  min-height: 100px;
   padding: 10px 0;
 
   @media screen and (min-width: ${breakpoints.tablet}px) {
